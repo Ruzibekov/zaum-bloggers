@@ -11,6 +11,11 @@ export interface SheetRef {
   gid: string | null;
 }
 
+export function isDemoSheet(url: string): boolean {
+  const id = parseSheetUrl(url)?.id;
+  return id !== undefined && id === parseSheetUrl(DEMO_SHEET_URL)?.id;
+}
+
 export function parseSheetUrl(input: string): SheetRef | null {
   const value = input.trim();
   const match = /docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]{20,})/.exec(value);

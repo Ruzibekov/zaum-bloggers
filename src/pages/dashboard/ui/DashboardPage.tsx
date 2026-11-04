@@ -2,6 +2,7 @@ import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react"
 import {
   cpmScaleOf,
   focusMonth,
+  isDemoSheet,
   summarize,
   taskGroupsOf,
   weekEnd,
@@ -82,6 +83,7 @@ export function DashboardPage({ state, source, onSourceChange, onRefresh }: Dash
   const visible = useMemo(() => applyFilters(placements, deferredFilters, groups), [placements, deferredFilters, groups]);
 
   const live = data.source.kind === "sheet" && !fallback;
+  const demo = data.source.kind !== "sheet" || isDemoSheet(data.source.url);
   const loadedTime = timeFormat.format(loadedAt);
   if (wasRefreshing !== refreshing) {
     setWasRefreshing(refreshing);
@@ -146,9 +148,10 @@ export function DashboardPage({ state, source, onSourceChange, onRefresh }: Dash
     <>
       <AppBar
         homeHref={buildHash({ blogger: null, view: route.view })}
+        demo={demo}
         sourceName={sourceName}
         sourceWhen={sourceWhen}
-        sourceHint={`источник: ${live ? `Google Таблица, загружено в ${sourceWhen}` : `снимок data.json от ${formatDate(data.generatedAt)}`}, настроить`}
+        sourceHint={`источник: ${live ? `Google Таблица, загружено в ${sourceWhen}` : `снимок таблицы от ${formatDate(data.generatedAt)}`}, настроить`}
         refreshing={refreshing}
         onSource={() => setSourceOpen(true)}
         onRefresh={onRefresh}
@@ -228,7 +231,7 @@ export function DashboardPage({ state, source, onSourceChange, onRefresh }: Dash
         />
         <footer className={styles.footer}>
           <p>
-            Демо-данные ZAUM: блогеры и цифры вымышлены. Сервис только читает таблицу и ничего в неё не записывает.
+            {demo ? "Демо-данные ZAUM: блогеры и цифры вымышлены. " : ""}Сервис только читает таблицу и ничего в неё не записывает.
           </p>
         </footer>
       </main>

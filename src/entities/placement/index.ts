@@ -38,7 +38,7 @@ export {
   type Workload,
 } from "./model/metrics";
 export { normalizeRows, SheetFormatError } from "./model/normalize";
-export { csvExportUrl, DEMO_SHEET_URL, parseSheetUrl, SheetLoadError } from "./api/sheet";
+export { csvExportUrl, DEMO_SHEET_URL, isDemoSheet, parseSheetUrl, SheetLoadError } from "./api/sheet";
 export { useDataset, type DatasetState, type SheetFallback, type SourcePreference } from "./api/useDataset";
 export { StageBadge } from "./ui/StageBadge";
 export { StageDot } from "./ui/StageDot";

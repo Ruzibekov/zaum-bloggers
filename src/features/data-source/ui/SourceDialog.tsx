@@ -92,8 +92,8 @@ function SourceForm({ current, onClose, onSave }: Omit<SourceDialogProps, "open"
         <label className={styles.option} data-checked={kind === "file" ? "" : undefined}>
           <input type="radio" name="source" value="file" checked={kind === "file"} onChange={() => setKind("file")} />
           <span className={styles.optionText}>
-            <span className={styles.optionTitle}>Снимок data.json</span>
-            <span className={styles.optionHint}>Выгрузка из .xlsx, лежит рядом с сервисом. Работает без интернета.</span>
+            <span className={styles.optionTitle}>Сохранённый снимок</span>
+            <span className={styles.optionHint}>Копия демо-таблицы, сохранённая вместе с сервисом. Открывается, даже если Google недоступен.</span>
           </span>
         </label>
       </fieldset>

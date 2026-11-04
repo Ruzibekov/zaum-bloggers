@@ -3,6 +3,7 @@ import styles from "./DashboardPage.module.css";
 
 interface AppBarProps {
   homeHref: string;
+  demo: boolean;
   sourceName: string;
   sourceWhen: string;
   sourceHint: string;
@@ -12,7 +13,7 @@ interface AppBarProps {
   onSearch?: () => void;
 }
 
-export function AppBar({ homeHref, sourceName, sourceWhen, sourceHint, refreshing, onSource, onRefresh, onSearch }: AppBarProps) {
+export function AppBar({ homeHref, demo, sourceName, sourceWhen, sourceHint, refreshing, onSource, onRefresh, onSearch }: AppBarProps) {
   return (
     <header className={styles.appbar}>
       <div className={styles.appbarInner}>
@@ -20,9 +21,11 @@ export function AppBar({ homeHref, sourceName, sourceWhen, sourceHint, refreshin
           <span className={styles.logo}>ZAUM</span>
           <span className={styles.brandText}>Блогеры</span>
         </a>
-        <span className={styles.demo} title="Данные в таблице вымышлены">
-          Демо-данные
-        </span>
+        {demo ? (
+          <span className={styles.demo} title="Данные в таблице вымышлены">
+            Демо-данные
+          </span>
+        ) : null}
         <span className={styles.spacer} />
         {onSearch ? (
           <Button variant="icon" aria-label="Найти блогера" onClick={onSearch}>

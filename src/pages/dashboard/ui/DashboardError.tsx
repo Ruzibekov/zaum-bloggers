@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { SourcePreference } from "@/entities/placement";
+import { isDemoSheet, type SourcePreference } from "@/entities/placement";
 import { SourceDialog } from "@/features/data-source";
 import { Button, StateBlock } from "@/shared/ui";
 import { AppBar } from "./AppBar";
@@ -19,7 +19,8 @@ export function DashboardError({ message, source, onSourceChange, onRefresh }: D
     <>
       <AppBar
         homeHref="#"
-        sourceName={sheet ? "Google Таблица" : "Снимок data.json"}
+        demo={!sheet || isDemoSheet(source.url)}
+        sourceName={sheet ? "Google Таблица" : "Снимок таблицы"}
         sourceWhen="не загружено"
         sourceHint="данные не загружены, настроить источник"
         refreshing={false}
@@ -34,7 +35,7 @@ export function DashboardError({ message, source, onSourceChange, onRefresh }: D
               <Button onClick={onRefresh}>Повторить</Button>
               {sheet ? (
                 <Button variant="outline" onClick={() => onSourceChange({ kind: "file" })}>
-                  Открыть снимок data.json
+                  Открыть сохранённый снимок
                 </Button>
               ) : (
                 <Button variant="outline" onClick={() => setSourceOpen(true)}>

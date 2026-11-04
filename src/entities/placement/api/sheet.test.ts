@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { csvExportUrl, loadSheetDataset, parseSheetUrl, SheetLoadError } from "./sheet";
+import { csvExportUrl, isDemoSheet, loadSheetDataset, parseSheetUrl, SheetLoadError } from "./sheet";
 
 const URL_DEMO = "https://docs.google.com/spreadsheets/d/1PSx9Wasorkh-VTqj50fOZmfHSavWLkZjfr-e01bV-Fk/edit?gid=42#gid=42";
 
@@ -44,5 +44,16 @@ describe("loadSheetDataset", () => {
     const data = await loadSheetDataset(URL_DEMO);
     expect(data.source).toEqual({ kind: "sheet", title: "Google Таблица", url: URL_DEMO });
     expect(data.placements[0]).toMatchObject({ blogger: "Канал", stage: "published", date: "2026-11-03" });
+  });
+});
+
+describe("isDemoSheet", () => {
+  it("recognises the demo sheet by id regardless of link form", () => {
+    expect(isDemoSheet("https://docs.google.com/spreadsheets/d/1PSx9Wasorkh-VTqj50fOZmfHSavWLkZjfr-e01bV-Fk/edit?usp=sharing")).toBe(true);
+  });
+
+  it("treats another sheet or a broken link as not demo", () => {
+    expect(isDemoSheet("https://docs.google.com/spreadsheets/d/1F0zIj-ZsNzEJZwyV4AiX3aE249JzGv69eb3bUPpZjhU/edit")).toBe(false);
+    expect(isDemoSheet("не ссылка")).toBe(false);
   });
 });

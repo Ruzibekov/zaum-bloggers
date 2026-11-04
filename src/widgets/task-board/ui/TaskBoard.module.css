@@ -144,17 +144,17 @@
 }
 
 .chipName {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: none;
   white-space: nowrap;
 }
 
 .chipMeta {
-  flex: none;
+  min-width: 0;
+  overflow: hidden;
   font-size: var(--text-meta);
   font-weight: 400;
   color: var(--ink-3);
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -216,6 +216,20 @@
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 400px) {
+  .chip:not(:last-child) {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    padding-block: 6px;
+  }
+
+  .chip:not(:last-child) .chipMeta {
+    max-width: 100%;
   }
 }
 
