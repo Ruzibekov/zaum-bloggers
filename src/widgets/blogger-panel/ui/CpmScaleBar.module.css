@@ -1,0 +1,85 @@
+.figure {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.track {
+  position: relative;
+  height: 28px;
+}
+
+.zone {
+  position: absolute;
+  top: 10px;
+  height: 8px;
+}
+
+.zone[data-zone="good"] {
+  border-radius: 4px 0 0 4px;
+  background: var(--verdict-good);
+}
+
+.zone[data-zone="normal"] {
+  background: var(--verdict-normal);
+  box-shadow:
+    inset 2px 0 0 var(--surface),
+    inset -2px 0 0 var(--surface);
+}
+
+.zone[data-zone="bad"] {
+  border-radius: 0 4px 4px 0;
+  background: var(--verdict-bad);
+}
+
+.range {
+  position: absolute;
+  top: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--ink-3);
+}
+
+.median {
+  position: absolute;
+  top: 10px;
+  width: 2px;
+  height: 8px;
+  margin-left: -1px;
+  background: var(--surface);
+}
+
+.marker {
+  position: absolute;
+  top: 3px;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 2px 6px rgb(0 0 0 / 0.25);
+}
+
+.labels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  font-size: 12.5px;
+  font-weight: 550;
+  color: var(--ink-2);
+}
+
+.labels > :nth-child(2) {
+  text-align: center;
+}
+
+.labels > :nth-child(3) {
+  text-align: right;
+}
+
+.caption {
+  font-size: 13px;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}

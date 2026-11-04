@@ -1,0 +1,26 @@
+.loading {
+  display: grid;
+  gap: 16px;
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: calc(var(--appbar-height) + 28px) var(--gutter) 40px;
+}
+
+.loadingSplit {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+}
+
+.center {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: var(--gutter);
+}
+
+@media (max-width: 960px) {
+  .loadingSplit {
+    grid-template-columns: 1fr;
+  }
+}

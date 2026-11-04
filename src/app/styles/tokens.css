@@ -1,0 +1,91 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f1eb;
+  --surface: #fdfcfa;
+  --surface-2: #ebe6dd;
+  --surface-3: #e2dccf;
+  --chip-active: #fdfcfa;
+  --ink: #1c1a17;
+  --ink-hover: #36322c;
+  --ink-2: #4f4a42;
+  --ink-3: #645e55;
+  --line: #e6e1d7;
+  --line-strong: #d6cfc2;
+  --hover: #f0ebe3;
+  --hover-strong: #e4ded3;
+  --bar: #e3ddd1;
+  --focus: #1c1a17;
+  --focus-ring: rgb(28 26 23 / 0.14);
+  --scrim: rgb(28 26 23 / 0.32);
+  --stage-approval: #9a6200;
+  --stage-scheduled: #2f63b0;
+  --stage-published: #0f7f86;
+  --stage-results: #2e7d4f;
+  --stage-other: #645e55;
+  --tint-strength: 11%;
+  --verdict-good: #2e7d4f;
+  --verdict-normal: #645e55;
+  --verdict-bad: #c4501c;
+  --warn: #c4501c;
+  --shadow-card: 0 0 0 1px rgb(28 26 23 / 0.05), 0 1px 2px rgb(28 26 23 / 0.04), 0 8px 24px -16px rgb(28 26 23 / 0.18);
+  --shadow-raised: 0 0 0 1px rgb(28 26 23 / 0.06), 0 2px 4px rgb(28 26 23 / 0.05), 0 18px 40px -20px rgb(28 26 23 / 0.28);
+  --shadow-chip: 0 0 0 1px rgb(28 26 23 / 0.06), 0 1px 3px rgb(28 26 23 / 0.1);
+  --shadow-panel: -24px 0 64px -24px rgb(28 26 23 / 0.35);
+  --radius-lg: 20px;
+  --radius-md: 16px;
+  --page: 1280px;
+  --gutter: 24px;
+  --tap: 40px;
+  --appbar-height: 56px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: linear(0, 0.0355, 0.122, 0.2354, 0.3583, 0.4793, 0.5909, 0.6893, 0.7727, 0.841, 0.8951, 0.9366, 0.9673, 0.9891, 1.0037, 1.0128, 1.0177, 1.0197, 1.0197, 1.0184, 1.0163, 1.0139, 1.0115, 1.0091, 1.0071, 1.0053, 1.0038, 1.0026, 1.0016, 1.0009, 1.0004, 1, 0.9998, 0.9997, 0.9996, 0.9996, 0.9996, 0.9997, 0.9997, 0.9997, 1);
+  --spring-duration: 560ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0b0a09;
+    --surface: #211f1c;
+    --surface-2: #33302b;
+    --surface-3: #46413a;
+    --chip-active: #524c44;
+    --ink: #f2eee7;
+    --ink-hover: #dcd6cc;
+    --ink-2: #d2cabd;
+    --ink-3: #b5ad9f;
+    --line: #34312c;
+    --line-strong: #4a453e;
+    --hover: #2a2824;
+    --hover-strong: #3d3933;
+    --bar: #3a3631;
+    --focus: #f2eee7;
+    --focus-ring: rgb(242 238 231 / 0.18);
+    --scrim: rgb(0 0 0 / 0.6);
+    --stage-approval: #e0a23a;
+    --stage-scheduled: #7aa7ee;
+    --stage-published: #3fb8b8;
+    --stage-results: #5cc489;
+    --stage-other: #b5ad9f;
+    --tint-strength: 18%;
+    --verdict-good: #5cc489;
+    --verdict-normal: #b5ad9f;
+    --verdict-bad: #f07a4a;
+    --warn: #f07a4a;
+    --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.06), 0 8px 24px -16px rgb(0 0 0 / 0.7);
+    --shadow-raised: 0 0 0 1px rgb(255 255 255 / 0.08), 0 18px 40px -20px rgb(0 0 0 / 0.8);
+    --shadow-chip: 0 0 0 1px rgb(255 255 255 / 0.07), 0 1px 3px rgb(0 0 0 / 0.4);
+    --shadow-panel: -24px 0 64px -24px rgb(0 0 0 / 0.8);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+    --radius-lg: 18px;
+    --tap: 44px;
+    --appbar-height: 52px;
+  }
+}

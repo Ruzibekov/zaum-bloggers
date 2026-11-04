@@ -1,0 +1,126 @@
+.dot {
+  flex: none;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--stage-other);
+}
+
+.dot[data-stage="approval"],
+.stage[data-stage="approval"] {
+  --tone: var(--stage-approval);
+}
+.dot[data-stage="scheduled"],
+.stage[data-stage="scheduled"] {
+  --tone: var(--stage-scheduled);
+}
+.dot[data-stage="published"],
+.stage[data-stage="published"] {
+  --tone: var(--stage-published);
+}
+.dot[data-stage="results"],
+.stage[data-stage="results"] {
+  --tone: var(--stage-results);
+}
+
+.dot {
+  background: var(--tone, var(--stage-other));
+}
+
+.dot[data-stage="published"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--tone);
+}
+
+.dot[data-stage="approval"] {
+  border-radius: 2px;
+  transform: rotate(45deg) scale(0.86);
+}
+
+.stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 26px;
+  padding: 0 10px 0 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone, var(--stage-other)) var(--tint-strength), var(--surface));
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.platform {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.platformCode {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.budget {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.budget[data-budget="barter"] {
+  color: var(--ink);
+  background: var(--surface-2);
+  box-shadow: none;
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 550;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.verdictMark {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--verdict-normal);
+}
+
+.verdict[data-verdict="good"] .verdictMark {
+  background: var(--verdict-good);
+}
+
+.verdict[data-verdict="bad"] .verdictMark {
+  background: var(--verdict-bad);
+}
+
+.missing {
+  font-size: 13px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}

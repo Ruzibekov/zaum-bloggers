@@ -1,0 +1,83 @@
+.pill {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--tap);
+  padding: 0 10px 0 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--ink);
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out),
+    transform 120ms var(--ease-out);
+}
+
+.label {
+  color: var(--ink-3);
+}
+
+.value {
+  font-weight: 550;
+  max-width: 18ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  color: var(--ink-3);
+}
+
+.pill[data-active] {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: none;
+}
+
+.pill[data-active] .label,
+.pill[data-active] .chevron {
+  color: color-mix(in srgb, var(--bg) 78%, var(--ink));
+}
+
+.select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  appearance: none;
+}
+
+@media (hover: hover) {
+  .pill:not([data-active]):hover {
+    background: var(--hover);
+  }
+}
+
+.pill:active {
+  transform: scale(0.97);
+}
+
+.pill:has(.select:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+  .pill:active {
+    transform: none;
+  }
+}

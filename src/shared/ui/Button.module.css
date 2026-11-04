@@ -1,0 +1,67 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--tap);
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 550;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease-out),
+    transform 120ms var(--ease-out);
+}
+
+.button[data-variant="solid"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.button[data-variant="quiet"] {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.button[data-variant="icon"] {
+  flex: none;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+@media (hover: hover) {
+  .button[data-variant="quiet"]:hover,
+  .button[data-variant="icon"]:hover {
+    background: var(--hover-strong);
+  }
+
+  .button[data-variant="solid"]:hover {
+    background: var(--ink-hover);
+  }
+}
+
+.button:active {
+  transform: scale(0.96);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .button:active {
+    transform: none;
+  }
+}

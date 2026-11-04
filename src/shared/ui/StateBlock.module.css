@@ -1,0 +1,26 @@
+.block {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.text {
+  margin: 0;
+  max-width: 42ch;
+  font-size: 14px;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.action {
+  margin-top: 10px;
+}
