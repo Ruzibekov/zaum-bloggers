@@ -66,8 +66,19 @@
 }
 
 .bead[data-act] {
-  outline: 2px solid var(--signal);
-  outline-offset: 2px;
+  position: relative;
+}
+
+.bead[data-act]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 4px);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--signal);
+  transform: translateX(-50%);
 }
 
 .beadEmpty {
@@ -88,7 +99,7 @@
 
 .tooltip {
   position: absolute;
-  left: var(--x);
+  left: calc(var(--x) + var(--shift, 0px));
   top: var(--y);
   z-index: 5;
   padding: var(--space-1) var(--space-2);
@@ -260,7 +271,11 @@
   }
 
   .name {
+    overflow: visible;
     white-space: normal;
+    text-overflow: clip;
+    hyphens: auto;
+    overflow-wrap: break-word;
   }
 
   .waiting {
@@ -269,6 +284,17 @@
 
   .waiting::before {
     content: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .groups {
+    gap: var(--space-1);
+  }
+
+  .group {
+    column-gap: 6px;
+    padding: var(--space-2) 6px;
   }
 }
 

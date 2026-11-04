@@ -1,8 +1,9 @@
-import { useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { pipelineOf, STAGE_HINT, STAGE_LABEL, type Placement, type Stage, type StageBucket } from "@/entities/placement";
 import { formatCompactRub, formatShortDate, pluralRu } from "@/shared/lib/format";
 import { useFirstVisit } from "@/shared/lib/useFirstVisit";
 import { useRolledNumber } from "@/shared/lib/useRolledNumber";
+import { edgeShift } from "../model/edge-shift";
 import styles from "./StagePipeline.module.css";
 
 interface StagePipelineProps {
@@ -52,6 +53,17 @@ export function StagePipeline({ placements, waiting, today, active, onSelect }: 
   const animate = useFirstVisit("zaum:thread-drawn");
   const rootRef = useRef<HTMLElement>(null);
   const [hint, setHint] = useState<Hint | null>(null);
+  const tipRef = useRef<HTMLSpanElement>(null);
+
+  useLayoutEffect(() => {
+    const tip = tipRef.current;
+    const root = rootRef.current;
+    if (!tip || !root || !hint) return;
+    const width = tip.offsetWidth;
+    const left = root.getBoundingClientRect().left + hint.x - width / 2;
+    const shift = edgeShift(left, left + width, document.documentElement.clientWidth);
+    tip.style.setProperty("--shift", `${shift}px`);
+  }, [hint]);
 
   function showHint(event: PointerEvent<HTMLElement>, text: string) {
     if (event.pointerType !== "mouse") return;
@@ -96,7 +108,7 @@ export function StagePipeline({ placements, waiting, today, active, onSelect }: 
           );
         })}
         {hint ? (
-          <span className={styles.tooltip} style={{ "--x": `${hint.x}px`, "--y": `${hint.y}px` } as CSSProperties}>
+          <span ref={tipRef} className={styles.tooltip} style={{ "--x": `${hint.x}px`, "--y": `${hint.y}px` } as CSSProperties}>
             {hint.text}
           </span>
         ) : null}

@@ -24,6 +24,7 @@ import { useHashRoute } from "@/shared/lib/useHashRoute";
 import { useToday } from "@/shared/lib/useToday";
 import { formatDate, formatLongDay, pluralRu } from "@/shared/lib/format";
 import { Button, Toast, type ToastMessage } from "@/shared/ui";
+import { refreshToastOf } from "../model/refresh-toast";
 import { AppBar } from "./AppBar";
 import styles from "./DashboardPage.module.css";
 
@@ -43,6 +44,10 @@ function scrollIntoView(element: HTMLElement | null) {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   element.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   element.focus({ preventScroll: true });
+}
+
+function snapshotDate(generatedAt: string): string {
+  return generatedAt.slice(5, 10).split("-").reverse().join(".");
 }
 
 function publications(count: number): string {
@@ -82,9 +87,13 @@ export function DashboardPage({ state, source, onSourceChange, onRefresh }: Dash
     setWasRefreshing(refreshing);
     if (!refreshing) {
       setToast(
-        refreshError
-          ? { id: loadedAt, tone: "error", title: "Обновить не получилось", text: `${refreshError}. На экране данные с прошлой загрузки.` }
-          : { id: loadedAt, tone: "done", title: `Данные обновлены · ${loadedTime}` },
+        refreshToastOf({
+          loadedAt,
+          loadedTime,
+          refreshError,
+          sheetFailed: fallback !== null,
+          snapshotDate: formatDate(data.generatedAt),
+        }),
       );
     }
   }
@@ -97,7 +106,7 @@ export function DashboardPage({ state, source, onSourceChange, onRefresh }: Dash
   const waiting = workload.waiting.size;
   const mismatched = workload.mismatched.size;
   const sourceName = live ? "Google Таблица ·" : "Снимок от";
-  const sourceWhen = live ? loadedTime : data.generatedAt.slice(5, 10).split("-").reverse().join(".");
+  const sourceWhen = live ? loadedTime : snapshotDate(data.generatedAt);
 
   const hrefFor = (blogger: string) => buildHash({ blogger, view: route.view });
   const setView = (view: ListView) => navigate({ blogger: null, view }, "replace");
