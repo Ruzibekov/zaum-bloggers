@@ -17,6 +17,7 @@ import {
   type CpmScale,
   type Placement,
 } from "@/entities/placement";
+import { MessageButton } from "@/features/blogger-message";
 import { daysBetween } from "@/shared/lib/dates";
 import { formatCompact, formatInt, formatRelativeDay, formatRub, pluralRu } from "@/shared/lib/format";
 import { Button, CloseIcon, Dialog, ExternalIcon, StateBlock } from "@/shared/ui";
@@ -160,6 +161,7 @@ function PlacementCard({ placement: p, scale, today }: { placement: Placement; s
           <span className={styles.nextText} data-empty={next ? undefined : ""}>
             {next ?? (mismatches.length ? "Сначала сверьте данные в таблице" : "Не указан")}
           </span>
+          <MessageButton placement={p} today={today} variant="panel" />
         </div>
       </section>
 

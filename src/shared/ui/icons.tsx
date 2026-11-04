@@ -5,10 +5,13 @@ import {
   ArrowUp,
   ArrowUpDown,
   Calendar,
+  Check,
   ChevronDown,
   ChevronRight,
+  Copy,
   ExternalLink,
   List,
+  MessageSquareText,
   RefreshCw,
   Search,
   Sheet,
@@ -51,3 +54,6 @@ export const CalendarIcon = lucide(Calendar, "calendar");
 export const ListIcon = lucide(List, "list");
 export const SheetIcon = lucide(Sheet, "sheet");
 export const AlertIcon = lucide(TriangleAlert, "triangle-alert");
+export const CheckIcon = lucide(Check, "check");
+export const CopyIcon = lucide(Copy, "copy");
+export const MessageIcon = lucide(MessageSquareText, "message-square-text");

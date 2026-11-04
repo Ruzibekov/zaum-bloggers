@@ -86,8 +86,15 @@
 }
 
 .chipItem {
+  display: flex;
+  gap: 2px;
   min-width: 0;
   max-width: 100%;
+}
+
+.chip:not(:last-child) {
+  min-width: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
 .chip,

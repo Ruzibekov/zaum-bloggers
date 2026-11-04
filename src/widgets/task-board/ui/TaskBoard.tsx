@@ -1,4 +1,5 @@
 import { mismatchesOf, STAGE_LABEL, type Placement, type TaskGroup, type Workload } from "@/entities/placement";
+import { MessageButton } from "@/features/blogger-message";
 import { formatShortDate, pluralRu } from "@/shared/lib/format";
 import { ArrowIcon, Button } from "@/shared/ui";
 import styles from "./TaskBoard.module.css";
@@ -56,6 +57,7 @@ export function TaskBoard({ groups, workload, hrefFor, onShowAll, onShowMismatch
                       <span className={styles.chipName}>{p.blogger}</span>
                       <span className={styles.chipMeta}>{chipMeta(p, year)}</span>
                     </a>
+                    <MessageButton placement={p} today={today} variant="chip" />
                   </li>
                 ))}
                 {group.items.length > PREVIEW ? (

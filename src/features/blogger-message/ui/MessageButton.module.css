@@ -1,0 +1,183 @@
+.chipButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  min-height: var(--tap);
+  padding: 0;
+  border: 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--field);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background-color var(--t-hover) var(--ease-out),
+    color var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .chipButton:hover {
+    background: var(--hover-strong);
+    color: var(--ink);
+  }
+}
+
+.chipButton:active {
+  transform: scale(0.94);
+}
+
+.chipButton:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.panelButton {
+  justify-self: start;
+  margin-top: var(--space-2);
+  font-size: var(--text-meta);
+}
+
+.sheet {
+  display: grid;
+  gap: var(--space-4);
+  padding: 22px 22px 20px;
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.titleBlock {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-heading);
+  line-height: var(--lh-heading);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: var(--text-meta);
+  line-height: var(--lh-meta);
+  font-weight: 550;
+  color: var(--ink-2);
+}
+
+.text {
+  width: 100%;
+  min-height: 132px;
+  max-height: 50dvh;
+  padding: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-input);
+  line-height: var(--lh-strong);
+  resize: vertical;
+  field-sizing: content;
+}
+
+.text:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 0 0 1.5px var(--focus),
+    0 0 0 4px var(--focus-ring);
+}
+
+.note {
+  margin: 0;
+  font-size: var(--text-meta);
+  line-height: var(--lh-meta);
+  color: var(--ink);
+}
+
+.note::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: var(--space-2);
+  border-radius: 50%;
+  background: var(--signal);
+  vertical-align: 1px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.copy {
+  min-width: 200px;
+}
+
+.copyIcon {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+}
+
+.copyIcon > svg {
+  grid-area: 1 / 1;
+  transition:
+    opacity var(--t-popover) var(--ease-out),
+    transform var(--t-select) var(--ease-spring);
+}
+
+.copyIcon > svg:last-child,
+.copyIcon[data-copied] > svg:first-child {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.copyIcon[data-copied] > svg:last-child {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 640px) {
+  .sheet {
+    padding: 18px var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom));
+  }
+
+  .copy {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chipButton,
+  .copyIcon > svg {
+    transition: none;
+  }
+
+  .chipButton:active {
+    transform: none;
+  }
+}

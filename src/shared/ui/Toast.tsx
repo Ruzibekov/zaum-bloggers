@@ -10,7 +10,13 @@ export interface ToastMessage {
 
 const VISIBLE_MS = 4200;
 
-export function Toast({ message, onDismiss }: { message: ToastMessage | null; onDismiss: () => void }) {
+interface ToastProps {
+  message: ToastMessage | null;
+  onDismiss: () => void;
+  placement?: "page" | "sheet";
+}
+
+export function Toast({ message, onDismiss, placement = "page" }: ToastProps) {
   const [shown, setShown] = useState(message);
   if (message && message !== shown) setShown(message);
 
@@ -21,7 +27,7 @@ export function Toast({ message, onDismiss }: { message: ToastMessage | null; on
   }, [message, onDismiss]);
 
   return (
-    <div className={styles.region} role="status" aria-live="polite">
+    <div className={styles.region} data-placement={placement} role="status" aria-live="polite">
       {shown ? (
         <div className={styles.toast} data-open={message ? "" : undefined} data-tone={shown.tone}>
           <span className={styles.mark} aria-hidden="true" />

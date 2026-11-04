@@ -54,6 +54,7 @@ export function Dialog({ open, onClose, labelledBy, variant, children }: DialogP
   }, [open, mounted]);
 
   function onCancel(event: SyntheticEvent<HTMLDialogElement>) {
+    if (event.target !== event.currentTarget) return;
     event.preventDefault();
     onClose();
   }
