@@ -68,6 +68,11 @@
   cursor: default;
 }
 
+.button[data-variant="solid"]:disabled {
+  background: var(--field);
+  color: var(--ink-3);
+}
+
 .button:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
