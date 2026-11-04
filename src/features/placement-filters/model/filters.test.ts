@@ -23,6 +23,17 @@ describe("applyFilters", () => {
     expect(applyFilters(rows, { ...INITIAL_FILTERS, format: "Обзор" }, []).map((p) => p.blogger)).toEqual(["Блогер 003"]);
   });
 
+  it("keeps only rows from mismatch groups when the mismatch filter is on", () => {
+    const rows = [makePlacement({ id: "a" }), makePlacement({ id: "b" }), makePlacement({ id: "c" })];
+    const check = { key: "check:comment", kind: "check" as const, title: "c", hint: null, items: [rows[1]!] };
+    const ahead = { key: "flag:statusAhead", kind: "check" as const, title: "s", hint: null, items: [rows[2]!, rows[1]!] };
+    const action = { key: "flag:overdue", kind: "flag" as const, title: "o", hint: null, items: [rows[0]!] };
+    const result = applyFilters(rows, { ...INITIAL_FILTERS, mismatch: true }, [action, check, ahead]);
+    expect(result.map((p) => p.id).sort()).toEqual(["b", "c"]);
+    expect(applyFilters(rows, { ...INITIAL_FILTERS, mismatch: true }, [action])).toHaveLength(0);
+    expect(isFiltered({ ...INITIAL_FILTERS, mismatch: true })).toBe(true);
+  });
+
   it("filters by a task group", () => {
     const [first] = rows;
     const group: TaskGroup = { key: "comment:x", kind: "comment", title: "x", hint: null, items: first ? [first] : [] };

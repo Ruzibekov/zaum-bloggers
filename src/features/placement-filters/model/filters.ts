@@ -18,6 +18,7 @@ export interface PlacementFilters {
   budget: BudgetKind | "all";
   format: string;
   task: string | null;
+  mismatch: boolean;
   sort: { key: SortKey; dir: SortDir };
 }
 
@@ -30,13 +31,14 @@ export const INITIAL_FILTERS: PlacementFilters = {
   budget: "all",
   format: ALL,
   task: null,
+  mismatch: false,
   sort: { key: "date", dir: "asc" },
 };
 
 export const SORT_LABEL: Record<SortKey, string> = {
   date: "Дата",
   blogger: "Блогер",
-  stage: "Статус",
+  stage: "Этап",
   followers: "Подписчики",
   reach: "Охват сторис",
   total: "Затраты",
@@ -60,7 +62,8 @@ export function isFiltered(filters: PlacementFilters): boolean {
     filters.platform !== ALL ||
     filters.budget !== "all" ||
     filters.format !== ALL ||
-    filters.task !== null
+    filters.task !== null ||
+    filters.mismatch
   );
 }
 
@@ -114,6 +117,10 @@ export function compareBy(key: SortKey, dir: SortDir) {
   };
 }
 
+export function mismatchIdsOf(groups: readonly TaskGroup[]): Set<string> {
+  return new Set(groups.filter((g) => g.kind === "check").flatMap((g) => g.items.map((p) => p.id)));
+}
+
 export function applyFilters(
   rows: readonly Placement[],
   filters: PlacementFilters,
@@ -121,6 +128,7 @@ export function applyFilters(
 ): Placement[] {
   const terms = normalize(filters.query).split(" ").filter(Boolean);
   const taskIds = filters.task ? new Set(groups.find((g) => g.key === filters.task)?.items.map((p) => p.id) ?? []) : null;
+  const mismatchIds = filters.mismatch ? mismatchIdsOf(groups) : null;
   return rows
     .filter((p) => {
       if (filters.stage !== "all" && p.stage !== filters.stage) return false;
@@ -128,6 +136,7 @@ export function applyFilters(
       if (filters.budget !== "all" && p.budget !== filters.budget) return false;
       if (filters.format !== ALL && p.format !== filters.format) return false;
       if (taskIds && !taskIds.has(p.id)) return false;
+      if (mismatchIds && !mismatchIds.has(p.id)) return false;
       if (terms.length) {
         const text = haystack(p);
         if (!terms.every((term) => text.includes(term))) return false;

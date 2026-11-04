@@ -1,5 +1,6 @@
 import { addDays, daysBetween, monthOf, weekdayIndex } from "@/shared/lib/dates";
-import { isBeforePublication, PIPELINE, stageIndex } from "./stages";
+import { formatShortDate } from "@/shared/lib/format";
+import { isBeforePublication, PIPELINE, STAGE_LABEL, stageIndex } from "./stages";
 import type { Placement, Stage } from "./types";
 
 function finite(value: number | null): value is number {
@@ -168,13 +169,13 @@ export type Flag = "overdue" | "noDate" | "statusAhead";
 export const FLAG_TITLE: Record<Flag, string> = {
   overdue: "Дата прошла, а реклама не вышла",
   noDate: "Нет даты публикации",
-  statusAhead: "Статус опережает дату",
+  statusAhead: "Расхождение: статус дальше даты",
 };
 
 export const FLAG_HINT: Record<Flag, string> = {
   overdue: "Уточните у блогера новую дату или обновите статус",
   noDate: "Без даты размещение не попадёт в календарь",
-  statusAhead: "Дата ещё не наступила, а в статусе уже «Опубликовано»: проверьте дату или статус",
+  statusAhead: "Дата ещё впереди, а в статусе уже «Опубликовано» или «Результаты получены»: проверьте дату",
 };
 
 export function flagsOf(placement: Placement, today: string): Flag[] {
@@ -189,13 +190,56 @@ export function flagsOf(placement: Placement, today: string): Flag[] {
 }
 
 const NOTE_ONLY = /^демонстрационн/i;
+const NEEDS_DATE = /нужн[аоы]?\s+дат/i;
+const CHECK_RESULTS = /провер\S*\s+результат/i;
 
 export function isActionFlag(flag: Flag): boolean {
   return flag !== "statusAhead";
 }
 
 export function isActionComment(comment: string | null): comment is string {
-  return comment !== null && !NOTE_ONLY.test(comment);
+  return comment !== null && comment.trim() !== "" && !NOTE_ONLY.test(comment);
+}
+
+export type CommentCheck =
+  | { kind: "task"; title: string; hint: string | null }
+  | { kind: "mismatch"; title: string; reason: string };
+
+export function commentCheckOf(placement: Placement, today: string): CommentCheck | null {
+  const { comment, date, stage } = placement;
+  if (!isActionComment(comment) || stage === "other") return null;
+  const title = comment.trim();
+  if (NEEDS_DATE.test(title)) {
+    if (date === null) return { kind: "task", title, hint: "Согласуйте с блогером дату выхода" };
+    return { kind: "mismatch", title, reason: `в комментарии «${title}», а дата уже стоит — ${formatShortDate(date, Number(today.slice(0, 4)))}` };
+  }
+  if (CHECK_RESULTS.test(title)) {
+    if (stage === "published" && date !== null && date <= today) {
+      return { kind: "task", title, hint: "Реклама вышла, статистики ещё нет" };
+    }
+    if (stage === "results") {
+      return { kind: "mismatch", title, reason: `в комментарии «${title}», а результаты уже получены` };
+    }
+    if (date !== null && date > today) {
+      return { kind: "mismatch", title, reason: `в комментарии «${title}», а публикация только ${formatShortDate(date, Number(today.slice(0, 4)))}` };
+    }
+    return {
+      kind: "mismatch",
+      title,
+      reason: `в комментарии «${title}», а реклама ещё на этапе «${STAGE_LABEL[stage]}»`,
+    };
+  }
+  return { kind: "task", title, hint: null };
+}
+
+export function mismatchesOf(placement: Placement, today: string): string[] {
+  const reasons: string[] = [];
+  if (flagsOf(placement, today).includes("statusAhead") && placement.date) {
+    reasons.push(`статус «${STAGE_LABEL[placement.stage]}», а дата публикации ещё впереди — ${formatShortDate(placement.date, Number(today.slice(0, 4)))}`);
+  }
+  const check = commentCheckOf(placement, today);
+  if (check?.kind === "mismatch") reasons.push(check.reason);
+  return reasons;
 }
 
 export interface TaskGroup {
@@ -206,6 +250,9 @@ export interface TaskGroup {
   items: Placement[];
 }
 
+export const MISMATCH_TITLE = "Расхождение: комментарий и данные";
+export const MISMATCH_HINT = "Комментарий в таблице не совпадает с датой или этапом: проверьте, что верно";
+
 export function taskGroupsOf(placements: readonly Placement[], today: string): TaskGroup[] {
   const flagGroups = (["overdue", "noDate", "statusAhead"] as const).map<TaskGroup>((flag) => ({
     key: `flag:${flag}`,
@@ -214,25 +261,57 @@ export function taskGroupsOf(placements: readonly Placement[], today: string): T
     hint: FLAG_HINT[flag],
     items: placements.filter((p) => flagsOf(p, today).includes(flag)).sort(byDateThenStage),
   }));
-  const comments = new Map<string, Placement[]>();
+  const comments = new Map<string, { hint: string | null; items: Placement[] }>();
+  const mismatched: Placement[] = [];
   for (const p of placements) {
-    if (!isActionComment(p.comment) || p.stage === "other") continue;
-    const list = comments.get(p.comment) ?? [];
-    list.push(p);
-    comments.set(p.comment, list);
+    const check = commentCheckOf(p, today);
+    if (!check) continue;
+    if (check.kind === "mismatch") {
+      mismatched.push(p);
+      continue;
+    }
+    if (NEEDS_DATE.test(check.title) && flagsOf(p, today).includes("noDate")) continue;
+    const entry = comments.get(check.title) ?? { hint: check.hint, items: [] };
+    entry.items.push(p);
+    comments.set(check.title, entry);
   }
   const commentGroups = [...comments.entries()]
-    .map<TaskGroup>(([comment, items]) => ({
-      key: `comment:${comment}`,
+    .map<TaskGroup>(([title, entry]) => ({
+      key: `comment:${title}`,
       kind: "comment",
-      title: comment,
-      hint: null,
-      items: items.sort(byDateThenStage),
+      title,
+      hint: entry.hint,
+      items: entry.items.sort(byDateThenStage),
     }))
     .sort((a, b) => b.items.length - a.items.length || a.title.localeCompare(b.title, "ru"));
+  const mismatchGroup: TaskGroup = {
+    key: "check:comment",
+    kind: "check",
+    title: MISMATCH_TITLE,
+    hint: MISMATCH_HINT,
+    items: mismatched.sort(byDateThenStage),
+  };
   const actions = flagGroups.filter((group) => group.kind === "flag");
-  const checks = flagGroups.filter((group) => group.kind === "check");
+  const checks = [...flagGroups.filter((group) => group.kind === "check"), mismatchGroup];
   return [...actions, ...commentGroups, ...checks].filter((group) => group.items.length > 0);
+}
+
+export interface Workload {
+  waiting: Set<string>;
+  mismatched: Set<string>;
+}
+
+export function workloadOf(groups: readonly TaskGroup[]): Workload {
+  const collect = (check: boolean) =>
+    new Set(groups.filter((g) => (g.kind === "check") === check).flatMap((g) => g.items.map((p) => p.id)));
+  return { waiting: collect(false), mismatched: collect(true) };
+}
+
+export function nextStepOf(placement: Placement, today: string): string | null {
+  const flag = flagsOf(placement, today).find(isActionFlag);
+  if (flag) return FLAG_HINT[flag];
+  const check = commentCheckOf(placement, today);
+  return check?.kind === "task" ? check.title : null;
 }
 
 export function focusMonth(placements: readonly Placement[], today: string): string {

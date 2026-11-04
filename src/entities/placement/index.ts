@@ -2,6 +2,7 @@ export type { BudgetKind, Dataset, DatasetSource, Placement, Stage } from "./mod
 export { isBeforePublication, PIPELINE, STAGE_HINT, STAGE_LABEL, STAGE_SHORT, stageIndex } from "./model/stages";
 export {
   agendaOf,
+  commentCheckOf,
   cpmDeviation,
   cpmOf,
   cpmScaleOf,
@@ -12,7 +13,11 @@ export {
   focusMonth,
   isActionComment,
   isActionFlag,
+  MISMATCH_HINT,
+  MISMATCH_TITLE,
+  mismatchesOf,
   MIN_CPM_SAMPLE,
+  nextStepOf,
   pipelineOf,
   scalePosition,
   summarize,
@@ -21,13 +26,16 @@ export {
   VERDICT_BAND,
   verdictFor,
   weekEnd,
+  workloadOf,
   type AgendaDay,
+  type CommentCheck,
   type CpmScale,
   type Flag,
   type StageBucket,
   type Summary,
   type TaskGroup,
   type Verdict,
+  type Workload,
 } from "./model/metrics";
 export { normalizeRows, SheetFormatError } from "./model/normalize";
 export { csvExportUrl, DEMO_SHEET_URL, parseSheetUrl, SheetLoadError } from "./api/sheet";

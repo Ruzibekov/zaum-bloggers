@@ -3,6 +3,7 @@ export {
   applyFilters,
   INITIAL_FILTERS,
   isFiltered,
+  mismatchIdsOf,
   resetFilters,
   SORT_LABEL,
   toggleSort,

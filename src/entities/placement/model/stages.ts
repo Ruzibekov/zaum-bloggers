@@ -13,17 +13,17 @@ export const STAGE_LABEL: Record<Stage, string> = {
 export const STAGE_SHORT: Record<Stage, string> = {
   approval: "Согласование",
   scheduled: "Запланировано",
-  published: "Вышло",
-  results: "Итоги есть",
+  published: "Опубликовано",
+  results: "Результаты получены",
   other: "Без статуса",
 };
 
 export const STAGE_HINT: Record<Stage, string> = {
-  approval: "Договариваемся об условиях и дате",
-  scheduled: "Дата согласована, ждём выхода",
-  published: "Реклама вышла, ждём статистику",
-  results: "Статистика собрана",
-  other: "Статус не распознан",
+  approval: "договариваемся",
+  scheduled: "ждём выхода",
+  published: "ждём статистику",
+  results: "статистика собрана",
+  other: "статус не распознан",
 };
 
 export function stageIndex(stage: Stage): number {
