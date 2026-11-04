@@ -20,13 +20,13 @@
   gap: 10px;
   min-width: 0;
   margin: 0 6px;
-  font-size: 18px;
+  font-size: var(--text-strong);
   font-weight: 650;
   letter-spacing: -0.01em;
 }
 
 .monthCount {
-  font-size: 13px;
+  font-size: var(--text-meta);
   font-weight: 500;
   color: var(--ink-2);
 }
@@ -42,7 +42,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 13px;
+  font-size: var(--text-meta);
   color: var(--ink-2);
 }
 
@@ -68,7 +68,7 @@
 
 .weekday {
   padding: 10px 10px 8px;
-  font-size: 12.5px;
+  font-size: var(--text-meta);
   font-weight: 600;
   color: var(--ink-2);
   border-bottom: 1px solid var(--line);
@@ -94,7 +94,7 @@
 }
 
 .week > .cell:nth-child(n + 6) {
-  background: color-mix(in srgb, var(--surface-2) 35%, var(--surface));
+  background: color-mix(in srgb, var(--field) 35%, var(--surface));
 }
 
 .cell[data-outside] .date {
@@ -108,15 +108,15 @@
   min-width: 26px;
   height: 26px;
   padding: 0 4px;
-  border-radius: 999px;
-  font-size: 13px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-meta);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
 .cell[data-today] .date {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--interactive);
+  color: var(--on-interactive);
 }
 
 .entries {
@@ -134,14 +134,14 @@
   min-width: 0;
   min-height: 28px;
   padding: 0 6px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   color: var(--ink);
-  font-size: 13px;
+  font-size: var(--text-meta);
   font-weight: 550;
   text-decoration: none;
   transition:
-    background-color 160ms var(--ease-out),
-    transform 120ms var(--ease-out);
+    background-color var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
 }
 
 .entryName {
@@ -171,7 +171,7 @@
 
 .more {
   padding: 0 6px;
-  font-size: 12.5px;
+  font-size: var(--text-meta);
   color: var(--ink-2);
 }
 
@@ -193,7 +193,7 @@
 }
 
 .agendaDate {
-  font-size: 13px;
+  font-size: var(--text-meta);
   font-weight: 600;
   color: var(--ink-2);
 }
@@ -216,19 +216,19 @@
   min-height: 44px;
   padding: 0 8px;
   margin: 0 -8px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   color: var(--ink);
-  font-size: 15px;
+  font-size: var(--text-body);
   font-weight: 550;
   text-decoration: none;
   transition:
-    background-color 160ms var(--ease-out),
-    transform 120ms var(--ease-out);
+    background-color var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
 }
 
 .agendaStage {
   margin-left: auto;
-  font-size: 13px;
+  font-size: var(--text-meta);
   font-weight: 450;
   color: var(--ink-2);
   white-space: nowrap;
@@ -237,7 +237,7 @@
 .agendaEmpty,
 .undated {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 

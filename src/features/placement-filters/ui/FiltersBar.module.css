@@ -30,13 +30,13 @@
   height: 44px;
   padding: 0 44px 0 42px;
   border: 0;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: var(--surface);
   box-shadow: inset 0 0 0 1px var(--line-strong);
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
-  transition: box-shadow 160ms var(--ease-out);
+  font-size: var(--text-body);
+  transition: box-shadow var(--t-hover) var(--ease-out);
 }
 
 .input::placeholder {
@@ -62,11 +62,11 @@
   min-width: 22px;
   height: 22px;
   padding: 0 6px;
-  border-radius: 6px;
-  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  background: var(--field);
   color: var(--ink-2);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--text-meta);
   font-weight: 600;
 }
 
@@ -78,11 +78,11 @@
   width: 40px;
   height: 40px;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--ink-2);
   cursor: pointer;
-  transition: transform 120ms var(--ease-out);
+  transition: transform var(--t-press) var(--ease-out);
 }
 
 .clear:active {
@@ -114,17 +114,17 @@
   height: var(--tap);
   padding: 0 12px 0 14px;
   border: 0;
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--bg);
+  border-radius: var(--radius-md);
+  background: var(--interactive);
+  color: var(--on-interactive);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--text-body);
   cursor: pointer;
-  transition: transform 120ms var(--ease-out);
+  transition: transform var(--t-press) var(--ease-out);
 }
 
 .taskLabel {
-  color: color-mix(in srgb, var(--bg) 78%, var(--ink));
+  color: color-mix(in srgb, var(--on-interactive) 78%, var(--interactive));
 }
 
 .taskValue {
@@ -144,8 +144,57 @@
   outline-offset: 2px;
 }
 
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--tap);
+  padding: 0 var(--space-3) 0 14px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-body);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
+}
+
+.toggleCount {
+  color: var(--ink-3);
+}
+
+.toggle[aria-pressed="true"] {
+  background: var(--interactive);
+  color: var(--on-interactive);
+  box-shadow: none;
+}
+
+.toggle[aria-pressed="true"] .toggleCount {
+  color: color-mix(in srgb, var(--on-interactive) 78%, var(--interactive));
+}
+
+@media (hover: hover) {
+  .toggle[aria-pressed="false"]:hover {
+    background: var(--hover);
+  }
+}
+
+.toggle:active {
+  transform: scale(0.97);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .reset {
-  border-radius: 999px;
+  border-radius: var(--radius-md);
 }
 
 @media (hover: none) {
@@ -180,7 +229,7 @@
 @media (max-width: 640px) {
   .input {
     padding-right: 44px;
-    font-size: 16px;
+    font-size: var(--text-input);
   }
 
   .kbd {
@@ -191,12 +240,14 @@
 @media (prefers-reduced-motion: reduce) {
   .clear,
   .taskChip,
+  .toggle,
   .input {
     transition: none;
   }
 
   .clear:active,
-  .taskChip:active {
+  .taskChip:active,
+  .toggle:active {
     transform: none;
   }
 }

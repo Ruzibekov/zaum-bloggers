@@ -8,7 +8,7 @@
 
 .title {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--text-body);
   font-weight: 600;
   color: var(--ink);
 }
@@ -16,7 +16,7 @@
 .text {
   margin: 0;
   max-width: 42ch;
-  font-size: 14px;
+  font-size: var(--text-body);
   color: var(--ink-2);
   text-wrap: pretty;
 }

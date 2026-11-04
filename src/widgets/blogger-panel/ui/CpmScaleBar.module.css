@@ -21,7 +21,7 @@
 }
 
 .zone[data-zone="normal"] {
-  background: var(--verdict-normal);
+  background: var(--ink-3);
   box-shadow:
     inset 2px 0 0 var(--surface),
     inset -2px 0 0 var(--surface);
@@ -36,7 +36,7 @@
   position: absolute;
   top: 22px;
   height: 3px;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   background: var(--ink-3);
 }
 
@@ -59,13 +59,13 @@
   background: var(--ink);
   box-shadow:
     0 0 0 3px var(--surface),
-    0 2px 6px rgb(0 0 0 / 0.25);
+    var(--shadow-chip);
 }
 
 .labels {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  font-size: 12.5px;
+  font-size: var(--text-meta);
   font-weight: 550;
   color: var(--ink-2);
 }
@@ -79,7 +79,7 @@
 }
 
 .caption {
-  font-size: 13px;
+  font-size: var(--text-meta);
   color: var(--ink-2);
   text-wrap: pretty;
 }

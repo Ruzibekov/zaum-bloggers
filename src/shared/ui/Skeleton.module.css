@@ -1,6 +1,6 @@
 .skeleton {
   display: block;
-  background: var(--surface-2);
+  background: var(--field);
   animation: pulse 1400ms var(--ease-in-out) infinite;
 }
 

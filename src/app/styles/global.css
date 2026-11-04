@@ -7,12 +7,12 @@
 html {
   -webkit-text-size-adjust: 100%;
   scrollbar-gutter: stable;
-  scroll-padding-top: calc(var(--appbar-height) + 56px);
+  scroll-padding-top: calc(var(--appbar-height) + var(--space-5));
 }
 
 @media (max-width: 960px) {
   html {
-    scroll-padding-top: calc(var(--appbar-height) + 12px);
+    scroll-padding-top: calc(var(--appbar-height) + var(--space-3));
   }
 }
 
@@ -26,9 +26,10 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: "Onest Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
   font-feature-settings: "cv11", "ss01";
+  font-variant-numeric: tabular-nums lining-nums;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;

@@ -1,9 +1,8 @@
 .section {
   display: grid;
   align-content: start;
-  gap: 4px;
   min-width: 0;
-  padding: 18px 20px 16px;
+  padding: var(--space-5);
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-card);
@@ -14,21 +13,23 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 4px 12px;
-  padding-bottom: 6px;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .title {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--text-heading);
+  line-height: var(--lh-heading);
   font-weight: 650;
   letter-spacing: -0.01em;
 }
 
 .count {
   margin: 0;
-  font-size: 13px;
-  color: var(--ink-2);
+  font-size: var(--text-meta);
+  line-height: var(--lh-meta);
+  color: var(--ink-3);
 }
 
 .groups {
@@ -39,188 +40,185 @@
 }
 
 .group {
-  display: grid;
-  gap: 6px;
-  padding: 12px 0;
-}
-
-.group + .group {
+  min-width: 0;
+  padding: var(--space-3) 0;
   border-top: 1px solid var(--line);
 }
 
-.groupHead {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.marker {
-  flex: none;
-  width: 4px;
-  height: 18px;
-  border-radius: 2px;
-  background: var(--ink-3);
-}
-
-.group[data-kind="flag"] .marker {
-  background: var(--warn);
-}
-
-.group[data-kind="check"] .marker {
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--ink-3);
-}
-
-.group[data-divider] {
-  margin-top: 6px;
-  border-top: 1px dashed var(--line-strong);
-}
-
-.dividerLabel {
-  margin: 0 0 4px;
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--ink-2);
+.group:first-child {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .groupTitle {
-  flex: 1;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   margin: 0;
-  font-size: 15px;
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
-.badge {
+.signal {
   flex: none;
-  min-width: 26px;
-  height: 24px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 650;
-  line-height: 24px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--signal);
 }
 
 .hint {
-  margin: 0 0 0 14px;
-  font-size: 13px;
-  color: var(--ink-2);
-  text-wrap: pretty;
+  margin: 2px 0 0;
+  font-size: var(--text-meta);
+  line-height: var(--lh-meta);
+  color: var(--ink-3);
 }
 
-.people {
+.chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 2px 0 0 14px;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
   padding: 0;
   list-style: none;
 }
 
-.person,
+.chipItem {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.chip,
 .more {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
+  max-width: 100%;
   min-height: var(--tap);
-  padding: 0 12px;
+  padding: 0 14px;
   border: 0;
-  border-radius: 10px;
-  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  background: var(--field);
   color: var(--ink);
   font: inherit;
-  font-size: 13.5px;
-  font-weight: 550;
+  font-size: var(--text-body);
+  font-weight: 600;
   text-decoration: none;
-  white-space: nowrap;
   cursor: pointer;
   transition:
-    background-color 160ms var(--ease-out),
-    transform 120ms var(--ease-out);
-}
-
-.personDate {
-  font-weight: 450;
-  color: var(--ink-2);
+    background-color var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
 }
 
 .more {
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--line-strong);
+  font-size: var(--text-meta);
 }
 
 @media (hover: hover) {
-  .person:hover {
+  .chip:hover,
+  .more:hover {
     background: var(--hover-strong);
   }
-
-  .more:hover {
-    background: var(--hover);
-  }
 }
 
-.person:active,
+.chip:active,
 .more:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
-.person:focus-visible,
+.chip:focus-visible,
 .more:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
+.chipName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chipMeta {
+  flex: none;
+  font-size: var(--text-meta);
+  font-weight: 400;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.checkText {
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-meta);
+  line-height: var(--lh-meta);
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.checkButton {
+  flex: none;
+  font-size: var(--text-meta);
+}
+
 .empty {
   display: grid;
-  gap: 4px;
-  padding: 16px 0;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
 }
 
 .emptyTitle {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--text-body);
   font-weight: 600;
 }
 
 .emptyText {
   margin: 0;
-  font-size: 14px;
-  color: var(--ink-2);
-}
-
-.footnote {
-  margin: 4px 0 0;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
-  font-size: 12.5px;
+  font-size: var(--text-meta);
+  line-height: var(--lh-meta);
   color: var(--ink-2);
 }
 
 @media (max-width: 640px) {
   .section {
-    padding: 16px 16px 14px;
+    padding: var(--space-4);
   }
 
-  .hint,
-  .people {
-    margin-left: 0;
+  .check {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .chipMeta {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .person,
+  .chip,
   .more {
     transition: none;
   }
 
-  .person:active,
+  .chip:active,
   .more:active {
     transform: none;
   }

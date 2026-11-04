@@ -6,17 +6,17 @@
   gap: 6px;
   height: var(--tap);
   padding: 0 10px 0 14px;
-  border-radius: 999px;
+  border-radius: var(--radius-md);
   background: var(--surface);
   box-shadow: inset 0 0 0 1px var(--line-strong);
   color: var(--ink);
-  font-size: 14px;
+  font-size: var(--text-body);
   white-space: nowrap;
   cursor: pointer;
   transition:
-    background-color 160ms var(--ease-out),
-    box-shadow 160ms var(--ease-out),
-    transform 120ms var(--ease-out);
+    background-color var(--t-hover) var(--ease-out),
+    box-shadow var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
 }
 
 .label {
@@ -35,14 +35,14 @@
 }
 
 .pill[data-active] {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--interactive);
+  color: var(--on-interactive);
   box-shadow: none;
 }
 
 .pill[data-active] .label,
 .pill[data-active] .chevron {
-  color: color-mix(in srgb, var(--bg) 78%, var(--ink));
+  color: color-mix(in srgb, var(--on-interactive) 78%, var(--interactive));
 }
 
 .select {
@@ -53,7 +53,7 @@
   opacity: 0;
   border: 0;
   font: inherit;
-  font-size: 16px;
+  font-size: var(--text-input);
   cursor: pointer;
   appearance: none;
 }

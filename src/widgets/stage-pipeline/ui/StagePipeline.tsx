@@ -1,105 +1,163 @@
-import { useMemo } from "react";
-import {
-  flagsOf,
-  isActionFlag,
-  pipelineOf,
-  STAGE_HINT,
-  STAGE_LABEL,
-  type Placement,
-  type Stage,
-} from "@/entities/placement";
-import { formatCompactRub, formatInt, pluralRu } from "@/shared/lib/format";
+import { useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { pipelineOf, STAGE_HINT, STAGE_LABEL, type Placement, type Stage, type StageBucket } from "@/entities/placement";
+import { formatCompactRub, formatShortDate, pluralRu } from "@/shared/lib/format";
+import { useFirstVisit } from "@/shared/lib/useFirstVisit";
+import { useRolledNumber } from "@/shared/lib/useRolledNumber";
 import styles from "./StagePipeline.module.css";
 
 interface StagePipelineProps {
   placements: readonly Placement[];
+  waiting: ReadonlySet<string>;
   today: string;
   active: Stage | "all";
   onSelect: (stage: Stage) => void;
 }
 
-export function StagePipeline({ placements, today, active, onSelect }: StagePipelineProps) {
-  const buckets = useMemo(() => pipelineOf(placements), [placements]);
-  const units = useMemo(() => {
-    const map = new Map<Stage, { id: string; blogger: string; flagged: boolean }[]>();
-    const sorted = [...placements].sort((a, b) => (a.date ?? "9").localeCompare(b.date ?? "9") || a.row - b.row);
-    for (const p of sorted) {
-      const list = map.get(p.stage) ?? [];
-      list.push({ id: p.id, blogger: p.blogger, flagged: flagsOf(p, today).some(isActionFlag) });
-      map.set(p.stage, list);
-    }
-    return map;
-  }, [placements, today]);
-  const flaggedTotal = [...units.values()].flat().filter((u) => u.flagged).length;
+interface Bead {
+  id: string;
+  label: string;
+  waiting: boolean;
+}
 
+interface Hint {
+  text: string;
+  x: number;
+  y: number;
+}
+
+const MAX_BEADS = 8;
+
+function beadsOf(placements: readonly Placement[], waiting: ReadonlySet<string>, year: number): Map<Stage, Bead[]> {
+  const map = new Map<Stage, Bead[]>();
+  const sorted = [...placements].sort(
+    (a, b) =>
+      Number(waiting.has(b.id)) - Number(waiting.has(a.id)) ||
+      (a.date ?? "9").localeCompare(b.date ?? "9") ||
+      a.row - b.row,
+  );
+  for (const p of sorted) {
+    const list = map.get(p.stage) ?? [];
+    const parts = [p.blogger, p.date ? formatShortDate(p.date, year) : "без даты"];
+    if (waiting.has(p.id)) parts.push("ждёт действия");
+    list.push({ id: p.id, label: parts.join(" · "), waiting: waiting.has(p.id) });
+    map.set(p.stage, list);
+  }
+  return map;
+}
+
+export function StagePipeline({ placements, waiting, today, active, onSelect }: StagePipelineProps) {
+  const buckets = useMemo(() => pipelineOf(placements), [placements]);
+  const year = Number(today.slice(0, 4));
+  const beads = useMemo(() => beadsOf(placements, waiting, year), [placements, waiting, year]);
+  const animate = useFirstVisit("zaum:thread-drawn");
+  const rootRef = useRef<HTMLElement>(null);
+  const [hint, setHint] = useState<Hint | null>(null);
+
+  function showHint(event: PointerEvent<HTMLElement>, text: string) {
+    if (event.pointerType !== "mouse") return;
+    const root = rootRef.current?.getBoundingClientRect();
+    const bead = event.currentTarget.getBoundingClientRect();
+    if (!root) return;
+    setHint({ text, x: bead.left + bead.width / 2 - root.left, y: bead.top - root.top });
+  }
+
+  let order = 0;
   return (
-    <section className={styles.section} aria-labelledby="pipeline-title">
-      <header className={styles.head}>
-        <h2 id="pipeline-title" className={styles.title}>
-          Где сейчас реклама
-        </h2>
-        <p className={styles.legend}>
-          <span className={styles.legendItem}>
-            <span className={styles.legendUnit} aria-hidden="true" />
-            одно размещение
-          </span>
-          {flaggedTotal ? (
-            <span className={styles.legendItem}>
-              <span className={styles.legendUnit} data-flagged="" aria-hidden="true" />
-              требует внимания
-            </span>
-          ) : null}
-        </p>
-      </header>
-      <ol className={styles.track}>
-        {buckets.map((bucket, index) => {
-          const list = units.get(bucket.stage) ?? [];
-          const flagged = list.filter((u) => u.flagged).length;
-          const pressed = active === bucket.stage;
+    <section
+      ref={rootRef}
+      className={styles.thread}
+      aria-labelledby="pipeline-title"
+      data-animate={animate ? "" : undefined}
+      style={{ "--cols": buckets.length } as CSSProperties}
+    >
+      <h2 id="pipeline-title" className="visually-hidden">
+        Где сейчас реклама: {placements.length} {pluralRu(placements.length, "размещение", "размещения", "размещений")} по
+        этапам
+      </h2>
+      <div className={styles.strand} aria-hidden="true" onPointerLeave={() => setHint(null)}>
+        {buckets.map((bucket) => {
+          const list = beads.get(bucket.stage) ?? [];
+          const shown = list.slice(0, MAX_BEADS);
           return (
-            <li key={bucket.stage} className={styles.step} data-stage={bucket.stage}>
-              <button
-                type="button"
-                className={styles.card}
-                aria-pressed={pressed}
-                onClick={() => onSelect(bucket.stage)}
-              >
-                <span className={styles.stepHead}>
-                  <span className={styles.stepIndex} aria-hidden="true">
-                    {index + 1}
-                  </span>
-                  <span className={styles.stepName}>{STAGE_LABEL[bucket.stage]}</span>
-                </span>
-                <span className={styles.figure}>
-                  <span className={styles.count}>{formatInt(bucket.count)}</span>
-                  <span className={styles.money}>{bucket.count ? formatCompactRub(bucket.total) : "пусто"}</span>
-                </span>
-                <span className={styles.units} aria-hidden="true">
-                  {list.map((unit) => (
-                    <span
-                      key={unit.id}
-                      className={styles.unit}
-                      data-stage={bucket.stage}
-                      data-flagged={unit.flagged ? "" : undefined}
-                    />
-                  ))}
-                  {list.length === 0 ? <span className={styles.unitEmpty} /> : null}
-                </span>
-                <span className={styles.hint}>
-                  {flagged ? (
-                    <span className={styles.flagLine}>
-                      <span className={styles.flagDot} aria-hidden="true" />
-                      {flagged} {pluralRu(flagged, "требует", "требуют", "требуют")} внимания
-                    </span>
-                  ) : (
-                    STAGE_HINT[bucket.stage]
-                  )}
-                </span>
-              </button>
-            </li>
+            <div key={bucket.stage} className={styles.knot} data-stage={bucket.stage}>
+              {shown.map((bead) => (
+                <span
+                  key={bead.id}
+                  className={styles.bead}
+                  data-act={bead.waiting ? "" : undefined}
+                  style={{ "--i": order++ } as CSSProperties}
+                  onPointerEnter={(event) => showHint(event, bead.label)}
+                  onPointerLeave={() => setHint(null)}
+                />
+              ))}
+              {list.length === 0 ? <span className={styles.beadEmpty} /> : null}
+              {list.length > MAX_BEADS ? <span className={styles.more}>+{list.length - MAX_BEADS}</span> : null}
+            </div>
           );
         })}
-      </ol>
+        {hint ? (
+          <span className={styles.tooltip} style={{ "--x": `${hint.x}px`, "--y": `${hint.y}px` } as CSSProperties}>
+            {hint.text}
+          </span>
+        ) : null}
+      </div>
+      <ul className={styles.groups}>
+        {buckets.map((bucket) => (
+          <li key={bucket.stage}>
+            <StageGroup
+              bucket={bucket}
+              waiting={(beads.get(bucket.stage) ?? []).filter((b) => b.waiting).length}
+              pressed={active === bucket.stage}
+              onSelect={onSelect}
+            />
+          </li>
+        ))}
+      </ul>
     </section>
+  );
+}
+
+function StageGroup({
+  bucket,
+  waiting,
+  pressed,
+  onSelect,
+}: {
+  bucket: StageBucket;
+  waiting: number;
+  pressed: boolean;
+  onSelect: (stage: Stage) => void;
+}) {
+  const count = useRolledNumber(bucket.count);
+  const money = bucket.count ? formatCompactRub(bucket.total) : "пусто";
+  const waitingText = waiting ? `${waiting} ${pluralRu(waiting, "ждёт", "ждут", "ждут")} действия` : null;
+  const label = [
+    `${STAGE_LABEL[bucket.stage]}: ${bucket.count} ${pluralRu(bucket.count, "размещение", "размещения", "размещений")}`,
+    money,
+    waitingText ?? (bucket.count ? STAGE_HINT[bucket.stage] : null),
+  ]
+    .filter(Boolean)
+    .join(", ");
+  return (
+    <button
+      type="button"
+      className={styles.group}
+      data-stage={bucket.stage}
+      aria-pressed={pressed}
+      aria-label={`${label}. ${pressed ? "Снять фильтр" : "Показать в списке"}`}
+      onClick={() => onSelect(bucket.stage)}
+    >
+      <span className={styles.shape} aria-hidden="true" />
+      <span className={styles.name}>{STAGE_LABEL[bucket.stage]}</span>
+      <span className={styles.count}>{count}</span>
+      <span className={styles.meta}>
+        {money}
+        {waitingText ? (
+          <em className={styles.waiting}>{waitingText}</em>
+        ) : bucket.count ? (
+          <span> · {STAGE_HINT[bucket.stage]}</span>
+        ) : null}
+      </span>
+    </button>
   );
 }

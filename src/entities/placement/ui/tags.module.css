@@ -34,7 +34,7 @@
 }
 
 .dot[data-stage="approval"] {
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   transform: rotate(45deg) scale(0.86);
 }
 
@@ -44,10 +44,10 @@
   gap: 7px;
   height: 26px;
   padding: 0 10px 0 9px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--tone, var(--stage-other)) var(--tint-strength), var(--surface));
   color: var(--ink);
-  font-size: 13px;
+  font-size: var(--text-meta);
   font-weight: 550;
   white-space: nowrap;
 }
@@ -56,7 +56,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13.5px;
+  font-size: var(--text-meta);
   color: var(--ink-2);
   white-space: nowrap;
 }
@@ -66,10 +66,10 @@
   place-items: center;
   width: 24px;
   height: 20px;
-  border-radius: 6px;
-  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  background: var(--field);
   color: var(--ink);
-  font-size: 12px;
+  font-size: var(--text-meta);
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -79,8 +79,8 @@
   align-items: center;
   height: 22px;
   padding: 0 8px;
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-meta);
   font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -90,7 +90,7 @@
 
 .budget[data-budget="barter"] {
   color: var(--ink);
-  background: var(--surface-2);
+  background: var(--field);
   box-shadow: none;
 }
 
@@ -98,7 +98,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13.5px;
+  font-size: var(--text-meta);
   font-weight: 550;
   color: var(--ink);
   white-space: nowrap;
@@ -107,8 +107,8 @@
 .verdictMark {
   width: 10px;
   height: 10px;
-  border-radius: 3px;
-  background: var(--verdict-normal);
+  border-radius: var(--radius-xs);
+  background: var(--ink-3);
 }
 
 .verdict[data-verdict="good"] .verdictMark {
@@ -120,7 +120,7 @@
 }
 
 .missing {
-  font-size: 13px;
+  font-size: var(--text-meta);
   color: var(--ink-3);
   white-space: nowrap;
 }

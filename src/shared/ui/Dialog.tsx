@@ -9,7 +9,7 @@ interface DialogProps {
   children: ReactNode;
 }
 
-const EXIT_FALLBACK_MS = 360;
+const EXIT_FALLBACK_MS = 320;
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -3,9 +3,10 @@ import {
   BudgetTag,
   cpmOf,
   flagsOf,
-  FLAG_HINT,
   FLAG_TITLE,
-  isActionComment,
+  isActionFlag,
+  mismatchesOf,
+  nextStepOf,
   PIPELINE,
   PlatformMark,
   STAGE_LABEL,
@@ -106,7 +107,9 @@ function PanelBody({ blogger, placements, scale, today, onClose }: Omit<BloggerP
 }
 
 function PlacementCard({ placement: p, scale, today }: { placement: Placement; scale: CpmScale | null; today: string }) {
-  const flags = flagsOf(p, today);
+  const flags = flagsOf(p, today).filter(isActionFlag);
+  const mismatches = mismatchesOf(p, today);
+  const next = nextStepOf(p, today);
   const cpm = cpmOf(p);
   const current = stageIndex(p.stage);
   const diff = p.date ? daysBetween(today, p.date) : null;
@@ -137,20 +140,25 @@ function PlacementCard({ placement: p, scale, today }: { placement: Placement; s
               data-state={index < current ? "done" : index === current ? "current" : "todo"}
               aria-current={index === current ? "step" : undefined}
             >
-              <span className={styles.stepBar} />
+              <span className={styles.bead} data-act={index === current && (flags.length || next) ? "" : undefined} />
               <span className={styles.stepLabel}>{STAGE_LABEL[stage]}</span>
             </li>
           ))}
         </ol>
         {flags.map((flag) => (
-          <p key={flag} className={styles.flag}>
-            <strong>{FLAG_TITLE[flag]}.</strong> {FLAG_HINT[flag]}
+          <p key={flag} className={styles.note} data-kind="action">
+            {FLAG_TITLE[flag]}
+          </p>
+        ))}
+        {mismatches.map((text) => (
+          <p key={text} className={styles.note}>
+            <strong>Расхождение:</strong> {text}
           </p>
         ))}
         <div className={styles.nextStep}>
           <span className={styles.nextLabel}>Следующий шаг</span>
-          <span className={styles.nextText} data-empty={isActionComment(p.comment) ? undefined : ""}>
-            {isActionComment(p.comment) ? p.comment : p.comment ? `Не указан (комментарий: «${p.comment}»)` : "Не указан"}
+          <span className={styles.nextText} data-empty={next ? undefined : ""}>
+            {next ?? (mismatches.length ? "Сначала сверьте данные в таблице" : "Не указан")}
           </span>
         </div>
       </section>

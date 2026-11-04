@@ -1,10 +1,11 @@
-import { useEffect, useId, useMemo, useRef } from "react";
+import { useEffect, useId, useMemo, useRef, type RefObject } from "react";
 import { PIPELINE, STAGE_LABEL, type Placement, type TaskGroup } from "@/entities/placement";
 import { Button, CloseIcon, SearchIcon, SelectPill } from "@/shared/ui";
 import {
   ALL,
   DEFAULT_DIR,
   isFiltered,
+  mismatchIdsOf,
   optionsOf,
   resetFilters,
   SORT_LABEL,
@@ -18,6 +19,7 @@ interface FiltersBarProps {
   filters: PlacementFilters;
   groups: readonly TaskGroup[];
   onChange: (next: PlacementFilters) => void;
+  searchRef?: RefObject<HTMLInputElement | null>;
 }
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -27,8 +29,9 @@ function isTypingTarget(target: EventTarget | null): boolean {
   );
 }
 
-export function FiltersBar({ rows, filters, groups, onChange }: FiltersBarProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+export function FiltersBar({ rows, filters, groups, onChange, searchRef }: FiltersBarProps) {
+  const ownRef = useRef<HTMLInputElement>(null);
+  const inputRef = searchRef ?? ownRef;
   const searchId = useId();
 
   useEffect(() => {
@@ -40,7 +43,7 @@ export function FiltersBar({ rows, filters, groups, onChange }: FiltersBarProps)
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [inputRef]);
 
   const options = useMemo(() => {
     const withCount = (value: string, label: string, n: number) => ({ value, label: `${label} · ${n}`, short: label });
@@ -73,6 +76,7 @@ export function FiltersBar({ rows, filters, groups, onChange }: FiltersBarProps)
     };
   }, [rows]);
 
+  const mismatchCount = useMemo(() => mismatchIdsOf(groups).size, [groups]);
   const task = filters.task ? (groups.find((g) => g.key === filters.task) ?? null) : null;
 
   return (
@@ -132,7 +136,7 @@ export function FiltersBar({ rows, filters, groups, onChange }: FiltersBarProps)
           }}
         />
         <SelectPill
-          label="Статус"
+          label="Этап"
           value={filters.stage}
           active={filters.stage !== ALL}
           options={options.stage}
@@ -159,6 +163,17 @@ export function FiltersBar({ rows, filters, groups, onChange }: FiltersBarProps)
           options={options.format}
           onChange={(value) => onChange({ ...filters, format: value })}
         />
+        {mismatchCount ? (
+          <button
+            type="button"
+            className={styles.toggle}
+            aria-pressed={filters.mismatch}
+            onClick={() => onChange({ ...filters, mismatch: !filters.mismatch })}
+          >
+            Расхождения
+            <span className={styles.toggleCount}>{mismatchCount}</span>
+          </button>
+        ) : null}
         {task ? (
           <button type="button" className={styles.taskChip} onClick={() => onChange({ ...filters, task: null })}>
             <span className={styles.taskLabel}>Задача</span>

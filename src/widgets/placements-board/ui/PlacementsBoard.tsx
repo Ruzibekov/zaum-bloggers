@@ -1,9 +1,9 @@
-import type { Ref } from "react";
+import type { Ref, RefObject } from "react";
 import { VERDICT_BAND, VERDICT_LABEL, type CpmScale, type Placement, type TaskGroup } from "@/entities/placement";
 import { FiltersBar, isFiltered, resetFilters, toggleSort, type PlacementFilters } from "@/features/placement-filters";
 import type { ListView } from "@/shared/lib/hash-route";
 import { formatInt, formatRub } from "@/shared/lib/format";
-import { Button, Segmented, StateBlock } from "@/shared/ui";
+import { ArrowDownIcon, ArrowUpIcon, Button, Segmented, StateBlock } from "@/shared/ui";
 import { PlacementsCalendar } from "./PlacementsCalendar";
 import { PlacementsTable } from "./PlacementsTable";
 import styles from "./PlacementsBoard.module.css";
@@ -21,6 +21,7 @@ interface PlacementsBoardProps {
   today: string;
   month: string;
   ref?: Ref<HTMLElement>;
+  searchRef?: RefObject<HTMLInputElement | null>;
 }
 
 const VIEWS = [
@@ -41,6 +42,7 @@ export function PlacementsBoard({
   today,
   month,
   ref,
+  searchRef,
 }: PlacementsBoardProps) {
   const filtered = isFiltered(filters);
   const band = Math.round(VERDICT_BAND * 100);
@@ -57,7 +59,7 @@ export function PlacementsBoard({
         </div>
         <Segmented label="Вид" options={VIEWS} value={view} onChange={onViewChange} />
       </header>
-      <FiltersBar rows={all} filters={filters} groups={groups} onChange={onFiltersChange} />
+      <FiltersBar rows={all} filters={filters} groups={groups} onChange={onFiltersChange} searchRef={searchRef} />
       {rows.length === 0 ? (
         <div className={styles.emptyCard}>
           <StateBlock
@@ -93,20 +95,16 @@ export function PlacementsBoard({
         <p className={styles.legend}>
           {scale ? (
             <>
-              <span className={styles.legendItem}>
-                <span className={styles.mark} data-verdict="good" aria-hidden="true" />
-                {VERDICT_LABEL.good} — CPM ниже медианы на {band}% и больше
+              <span className={styles.legendItem} data-verdict="good">
+                <ArrowDownIcon width={14} height={14} />
+                {VERDICT_LABEL.good.toLowerCase()} — CPM ниже медианы на {band}% и больше
               </span>
-              <span className={styles.legendItem}>
-                <span className={styles.mark} data-verdict="normal" aria-hidden="true" />
-                {VERDICT_LABEL.normal} — в пределах ±{band}%
-              </span>
-              <span className={styles.legendItem}>
-                <span className={styles.mark} data-verdict="bad" aria-hidden="true" />
-                {VERDICT_LABEL.bad} — выше на {band}% и больше
+              <span className={styles.legendItem} data-verdict="bad">
+                <ArrowUpIcon width={14} height={14} />
+                {VERDICT_LABEL.bad.toLowerCase()} — выше на {band}% и больше
               </span>
               <span className={styles.legendNote}>
-                Медиана CPM {formatRub(scale.median)} по {scale.count} размещениям
+                Без пометки — в пределах ±{band}% от медианы {formatRub(scale.median)} по {scale.count} размещениям
               </span>
             </>
           ) : (

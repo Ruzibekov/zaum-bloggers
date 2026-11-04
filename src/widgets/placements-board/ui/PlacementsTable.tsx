@@ -1,9 +1,7 @@
 import {
   cpmOf,
-  flagsOf,
-  FLAG_TITLE,
-  isActionComment,
-  isActionFlag,
+  mismatchesOf,
+  nextStepOf,
   PlatformMark,
   StageBadge,
   totalCostOf,
@@ -16,6 +14,7 @@ import {
 import { SORT_LABEL, type PlacementFilters, type SortKey } from "@/features/placement-filters";
 import { daysBetween } from "@/shared/lib/dates";
 import { DASH, formatCompact, formatInt, formatRub, formatShortDate, formatWeekdayShort, pluralRu } from "@/shared/lib/format";
+import { ArrowDownIcon, ArrowUpIcon, SortIcon } from "@/shared/ui";
 import styles from "./PlacementsTable.module.css";
 
 interface PlacementsTableProps {
@@ -46,10 +45,13 @@ function SortHeader({ column, sort, onSort, align }: { column: SortKey; sort: Pl
     >
       <button type="button" className={styles.sortButton} data-active={active ? "" : undefined} onClick={() => onSort(column)}>
         {SORT_LABEL[column]}
-        <svg className={styles.sortMark} data-dir={active ? sort.dir : undefined} width="10" height="12" viewBox="0 0 10 12" aria-hidden="true" focusable="false">
-          <path d="M5 1.5 8.5 5h-7z" className={styles.up} />
-          <path d="M5 10.5 1.5 7h7z" className={styles.down} />
-        </svg>
+        {active && sort.dir === "asc" ? (
+          <ArrowUpIcon className={styles.sortMark} data-active="" width={16} height={16} />
+        ) : active ? (
+          <ArrowDownIcon className={styles.sortMark} data-active="" width={16} height={16} />
+        ) : (
+          <SortIcon className={styles.sortMark} width={16} height={16} />
+        )}
       </button>
     </th>
   );
@@ -75,14 +77,15 @@ export function PlacementsTable({ rows, sort, onSort, hrefFor, scale, today }: P
         </thead>
         <tbody>
           {rows.map((p) => {
-            const flags = flagsOf(p, today);
+            const next = nextStepOf(p, today);
+            const mismatches = mismatchesOf(p, today);
             const cpm = cpmOf(p);
             const verdict = verdictFor(cpm, scale);
             const rel = p.date ? relative(p.date, today) : null;
             return (
               <tr key={p.id} className={styles.row}>
                 <th scope="row" className={styles.who}>
-                  <a className={styles.name} href={hrefFor(p.blogger)}>
+                  <a className={styles.name} href={hrefFor(p.blogger)} title={p.blogger}>
                     {p.blogger}
                   </a>
                   <span className={styles.meta}>
@@ -91,7 +94,7 @@ export function PlacementsTable({ rows, sort, onSort, hrefFor, scale, today }: P
                     {p.budget === "barter" || !p.budget ? <BudgetTag budget={p.budget} label={p.budgetLabel} /> : null}
                   </span>
                 </th>
-                <td className={styles.stage} data-label="Статус">
+                <td className={styles.stage} data-label="Этап">
                   <StageBadge stage={p.stage} label={p.statusLabel} />
                 </td>
                 <td className={styles.date} data-label="Дата">
@@ -126,22 +129,23 @@ export function PlacementsTable({ rows, sort, onSort, hrefFor, scale, today }: P
                 </td>
                 <td className={styles.num} data-label="CPM">
                   <span className={styles.primary}>
-                    {verdict ? <span className={styles.verdict} data-verdict={verdict} title={VERDICT_LABEL[verdict]} aria-hidden="true" /> : null}
                     {cpm === null ? <span className={styles.empty}>нет данных</span> : formatRub(cpm)}
                   </span>
-                  {verdict ? <span className={styles.secondary}>{VERDICT_LABEL[verdict].toLowerCase()}</span> : null}
+                  {verdict === "good" || verdict === "bad" ? (
+                    <span className={styles.verdict} data-verdict={verdict}>
+                      {verdict === "good" ? <ArrowDownIcon width={14} height={14} /> : <ArrowUpIcon width={14} height={14} />}
+                      {VERDICT_LABEL[verdict].toLowerCase()}
+                    </span>
+                  ) : null}
                 </td>
                 <td className={styles.next} data-label="Следующий шаг">
-                  {flags.map((flag) => (
-                    <span key={flag} className={styles.flag} data-kind={isActionFlag(flag) ? "action" : "check"}>
-                      {FLAG_TITLE[flag]}
+                  {next ? <span className={styles.flag}>{next}</span> : null}
+                  {mismatches.map((text) => (
+                    <span key={text} className={styles.comment}>
+                      Расхождение: {text}
                     </span>
                   ))}
-                  {isActionComment(p.comment) ? (
-                    <span className={styles.comment}>{p.comment}</span>
-                  ) : flags.length ? null : (
-                    <span className={styles.empty}>{p.comment ?? "не указан"}</span>
-                  )}
+                  {!next && !mismatches.length ? <span className={styles.empty}>не указан</span> : null}
                 </td>
               </tr>
             );

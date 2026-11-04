@@ -17,14 +17,14 @@
 
 .title {
   margin: 0;
-  font-size: 22px;
+  font-size: var(--text-heading);
   font-weight: 650;
   letter-spacing: -0.02em;
 }
 
 .lead {
   margin: 4px 0 0;
-  font-size: 14px;
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -46,8 +46,8 @@
   box-shadow: inset 0 0 0 1px var(--line-strong);
   cursor: pointer;
   transition:
-    box-shadow 160ms var(--ease-out),
-    transform 120ms var(--ease-out);
+    box-shadow var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
 }
 
 .option[data-checked] {
@@ -77,12 +77,12 @@
 }
 
 .optionTitle {
-  font-size: 15px;
+  font-size: var(--text-body);
   font-weight: 600;
 }
 
 .optionHint {
-  font-size: 13.5px;
+  font-size: var(--text-meta);
   color: var(--ink-2);
   text-wrap: pretty;
 }
@@ -94,7 +94,7 @@
 }
 
 .fieldLabel {
-  font-size: 13px;
+  font-size: var(--text-meta);
   font-weight: 550;
   color: var(--ink-2);
 }
@@ -104,12 +104,12 @@
   height: 44px;
   padding: 0 12px;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: var(--surface);
   box-shadow: inset 0 0 0 1px var(--line-strong);
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--text-body);
 }
 
 .input:focus-visible {
@@ -120,12 +120,12 @@
 }
 
 .input[aria-invalid] {
-  box-shadow: inset 0 0 0 1.5px var(--warn);
+  box-shadow: inset 0 0 0 1.5px var(--signal);
 }
 
 .error {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--text-meta);
   color: var(--ink);
 }
 
@@ -136,7 +136,7 @@
   height: 7px;
   margin-right: 8px;
   border-radius: 50%;
-  background: var(--warn);
+  background: var(--signal);
   vertical-align: 1px;
 }
 
@@ -148,13 +148,13 @@
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--text-meta);
   font-weight: 550;
   text-decoration: underline;
   text-decoration-color: var(--line-strong);
   text-underline-offset: 3px;
   cursor: pointer;
-  transition: transform 120ms var(--ease-out);
+  transition: transform var(--t-press) var(--ease-out);
 }
 
 .linkButton:active {
@@ -163,7 +163,7 @@
 
 .linkButton:focus-visible {
   outline: 2px solid var(--focus);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .actions {
@@ -182,7 +182,7 @@
   }
 
   .input {
-    font-size: 16px;
+    font-size: var(--text-input);
   }
 }
 

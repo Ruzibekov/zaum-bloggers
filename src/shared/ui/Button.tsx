@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.css";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "solid" | "quiet" | "icon";
+  variant?: "solid" | "quiet" | "outline" | "icon";
 }
 
 export function Button({ variant = "solid", className, type = "button", ...rest }: ButtonProps) {

@@ -1,10 +1,10 @@
 .group {
   position: relative;
   display: flex;
-  gap: 4px;
-  padding: 3px;
-  border-radius: 12px;
-  background: var(--surface-2);
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--field);
   overflow-x: auto;
   scrollbar-width: none;
   max-width: 100%;
@@ -14,65 +14,65 @@
   display: none;
 }
 
+.thumb {
+  position: absolute;
+  top: var(--space-1);
+  left: 0;
+  width: var(--thumb-w);
+  height: var(--tap);
+  border-radius: var(--radius-pill);
+  background: var(--raised);
+  box-shadow: var(--shadow-chip);
+  transform: translateX(var(--thumb-x));
+  pointer-events: none;
+}
+
+.thumb[data-ready] {
+  transition:
+    transform var(--t-select) var(--ease-spring),
+    width var(--t-select) var(--ease-spring);
+}
+
 .item {
+  position: relative;
   flex: none;
   display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  height: 34px;
-  padding: 0 13px;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--tap);
+  padding: 0 var(--space-4);
   border: 0;
-  border-radius: 9px;
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--ink-2);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--text-body);
   font-weight: 500;
-  line-height: 34px;
   white-space: nowrap;
   cursor: pointer;
   transition:
-    background-color 160ms var(--ease-out),
-    color 160ms var(--ease-out),
-    transform 120ms var(--ease-out);
-}
-
-.group[data-size="sm"] .item {
-  height: 30px;
-  line-height: 30px;
-  padding: 0 11px;
-  font-size: 13.5px;
+    color var(--t-hover) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
 }
 
 .hint {
-  font-size: 12px;
+  font-size: var(--text-meta);
   color: var(--ink-3);
-  font-variant-numeric: tabular-nums;
-}
-
-@media (max-width: 640px) {
-  .item,
-  .group[data-size="sm"] .item {
-    height: 44px;
-    line-height: 44px;
-  }
 }
 
 @media (hover: hover) {
   .item:hover:not([aria-checked="true"]):not(:disabled) {
     color: var(--ink);
-    background: var(--hover);
   }
 }
 
 .item:active:not(:disabled) {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .item[aria-checked="true"] {
-  background: var(--chip-active);
   color: var(--ink);
-  box-shadow: var(--shadow-chip);
+  font-weight: 600;
 }
 
 .item[aria-checked="true"] .hint {
@@ -90,7 +90,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .item {
+  .item,
+  .thumb[data-ready] {
     transition: none;
   }
 

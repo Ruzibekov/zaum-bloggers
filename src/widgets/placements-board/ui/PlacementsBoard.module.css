@@ -26,14 +26,14 @@
 
 .title {
   margin: 0;
-  font-size: 26px;
+  font-size: var(--text-heading);
   font-weight: 650;
   letter-spacing: -0.025em;
 }
 
 .count {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--text-body);
   color: var(--ink-2);
 }
 
@@ -54,33 +54,28 @@
   flex-wrap: wrap;
   gap: 6px 18px;
   margin: 0;
-  font-size: 13px;
+  font-size: var(--text-meta);
   color: var(--ink-2);
 }
 
 .legendItem {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: var(--space-1);
 }
 
 .legendNote {
   color: var(--ink-2);
 }
 
-.mark {
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
-  background: var(--verdict-normal);
+.legendItem[data-verdict="good"] {
+  color: var(--verdict-good);
+  font-weight: 600;
 }
 
-.mark[data-verdict="good"] {
-  background: var(--verdict-good);
-}
-
-.mark[data-verdict="bad"] {
-  background: var(--verdict-bad);
+.legendItem[data-verdict="bad"] {
+  color: var(--verdict-bad);
+  font-weight: 600;
 }
 
 @media (max-width: 960px) {
@@ -93,7 +88,7 @@
 
 @media (max-width: 640px) {
   .title {
-    font-size: 22px;
+    font-size: var(--text-heading);
   }
 
   .head > [role="radiogroup"] {

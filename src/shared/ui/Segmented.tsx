@@ -1,4 +1,4 @@
-import { useEffect, useRef, type KeyboardEvent } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import styles from "./Segmented.module.css";
 
 export interface SegmentedOption<T extends string> {
@@ -13,23 +13,34 @@ interface SegmentedProps<T extends string> {
   options: SegmentedOption<T>[];
   value: T;
   onChange: (value: T) => void;
-  size?: "md" | "sm";
 }
 
-export function Segmented<T extends string>({ label, options, value, onChange, size = "md" }: SegmentedProps<T>) {
+export function Segmented<T extends string>({ label, options, value, onChange }: SegmentedProps<T>) {
   const listRef = useRef<HTMLDivElement>(null);
+  const [thumb, setThumb] = useState<{ x: number; w: number; ready: boolean } | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const list = listRef.current;
     const button = list?.querySelector<HTMLButtonElement>('[aria-checked="true"]');
-    if (!list || !button || list.scrollWidth <= list.clientWidth) return;
+    if (!list || !button) return;
+    const measure = () =>
+      setThumb((prev) => ({ x: button.offsetLeft, w: button.offsetWidth, ready: prev !== null }));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(list);
+    if (list.scrollWidth <= list.clientWidth) return () => observer.disconnect();
     const left = button.offsetLeft;
     const right = left + button.offsetWidth;
     if (left < list.scrollLeft + 16 || right > list.scrollLeft + list.clientWidth - 16) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       list.scrollTo({ left: left - (list.clientWidth - button.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
     }
+    return () => observer.disconnect();
   }, [value]);
+
+  const thumbStyle = thumb
+    ? ({ "--thumb-x": `${thumb.x}px`, "--thumb-w": `${thumb.w}px` } as CSSProperties)
+    : undefined;
 
   function focusAndSelect(index: number) {
     const enabled = options.filter((o) => !o.disabled);
@@ -64,9 +75,10 @@ export function Segmented<T extends string>({ label, options, value, onChange, s
       role="radiogroup"
       aria-label={label}
       className={styles.group}
-      data-size={size}
       onKeyDown={onKeyDown}
+      style={thumbStyle}
     >
+      {thumb ? <span className={styles.thumb} data-ready={thumb.ready ? "" : undefined} aria-hidden="true" /> : null}
       {options.map((option) => {
         const checked = option.value === value;
         return (

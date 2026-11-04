@@ -4,13 +4,22 @@ import { DashboardPage } from "@/pages/dashboard";
 import { Button, Skeleton, StateBlock } from "@/shared/ui";
 import styles from "./App.module.css";
 
+const SKELETON_BEADS = Array.from({ length: 24 }, (_, index) => `skeleton-bead-${index}`);
+
 function LoadingView() {
   return (
     <div className={styles.loading} aria-busy="true" aria-label="Загружаем данные">
-      <Skeleton height={18} width={160} radius={6} />
-      <Skeleton height={56} width="min(560px, 100%)" radius={12} />
-      <Skeleton height={20} width={260} radius={6} />
-      <Skeleton height={190} radius={20} />
+      <Skeleton height={18} width={160} radius={8} />
+      <div className={styles.loadingTitle}>
+        <Skeleton height={52} width="min(620px, 100%)" radius={12} />
+        <Skeleton height={52} width="min(520px, 90%)" radius={12} />
+      </div>
+      <Skeleton height={22} width="min(420px, 80%)" radius={8} />
+      <div className={styles.loadingBeads}>
+        {SKELETON_BEADS.map((id) => (
+          <span key={id} className={styles.loadingBead} />
+        ))}
+      </div>
       <div className={styles.loadingSplit}>
         <Skeleton height={300} radius={20} />
         <Skeleton height={300} radius={20} />

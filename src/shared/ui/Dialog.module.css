@@ -3,18 +3,19 @@
   max-height: 100dvh;
   padding: 0;
   border: 0;
-  background: var(--bg);
+  background: var(--raised);
   color: var(--ink);
   overscroll-behavior: contain;
+  opacity: 0;
   transition:
-    transform var(--spring-duration) var(--ease-spring),
-    opacity 220ms var(--ease-out);
+    transform var(--t-panel-in) var(--ease-spring),
+    opacity var(--t-select) var(--ease-out);
 }
 
 .dialog::backdrop {
   background: var(--scrim);
   opacity: 0;
-  transition: opacity 280ms var(--ease-out);
+  transition: opacity var(--t-select) var(--ease-out);
 }
 
 .dialog[data-state="open"]::backdrop {
@@ -23,30 +24,39 @@
 
 .dialog[data-state="closing"] {
   transition:
-    transform 240ms var(--ease-exit),
-    opacity 200ms var(--ease-exit);
+    transform var(--t-panel-out) var(--ease-exit),
+    opacity var(--t-panel-out) var(--ease-exit);
 }
 
 .dialog[data-state="closing"]::backdrop {
-  transition-duration: 220ms;
+  transition-duration: var(--t-panel-out);
   transition-timing-function: var(--ease-exit);
 }
 
 .dialog[data-variant="side"] {
-  width: min(580px, 100%);
+  width: min(560px, 100%);
   height: 100dvh;
   margin: 0 0 0 auto;
   box-shadow: var(--shadow-panel);
-  transform: translateX(104%);
+  transform: translateX(24px);
 }
 
 .dialog[data-variant="center"] {
-  width: min(540px, calc(100% - 32px));
+  width: min(540px, calc(100% - 2 * var(--gutter)));
   margin: auto;
   border-radius: var(--radius-lg);
+  background: var(--raised);
   box-shadow: var(--shadow-raised);
-  transform: translateY(18px) scale(0.97);
-  opacity: 0;
+  transform: scale(0.97);
+  transition:
+    transform var(--t-select) var(--ease-spring),
+    opacity var(--t-select) var(--ease-out);
+}
+
+.dialog[data-variant="center"][data-state="closing"] {
+  transition:
+    transform var(--t-popover) var(--ease-exit),
+    opacity var(--t-popover) var(--ease-exit);
 }
 
 .dialog[data-state="open"] {
@@ -58,13 +68,22 @@
   .dialog[data-variant="side"],
   .dialog[data-variant="center"] {
     width: 100%;
-    height: auto;
-    max-height: calc(100dvh - 24px);
+    max-height: calc(100dvh - var(--space-3));
     margin: auto 0 0;
-    border-radius: 22px 22px 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     box-shadow: var(--shadow-raised);
-    transform: translateY(104%);
+    transform: translateY(100%);
     opacity: 1;
+  }
+
+  .dialog[data-variant="side"] {
+    height: calc(100dvh - var(--space-3));
+    transition: transform var(--t-panel-in) var(--ease-spring);
+  }
+
+  .dialog[data-variant="side"][data-state="closing"],
+  .dialog[data-variant="center"][data-state="closing"] {
+    transition: transform var(--t-panel-out) var(--ease-exit);
   }
 
   .dialog[data-state="open"] {
@@ -75,7 +94,9 @@
 @media (prefers-reduced-motion: reduce) {
   .dialog,
   .dialog::backdrop,
-  .dialog[data-state="closing"] {
+  .dialog[data-variant="center"],
+  .dialog[data-state="closing"],
+  .dialog[data-variant="side"] {
     transition: none;
   }
 }

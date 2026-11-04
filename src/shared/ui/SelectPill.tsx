@@ -1,4 +1,5 @@
 import type { ChangeEvent } from "react";
+import { ChevronDownIcon } from "./icons";
 import styles from "./SelectPill.module.css";
 
 export interface SelectPillOption {
@@ -23,9 +24,7 @@ export function SelectPill({ label, value, options, onChange, active = false, cl
     <label className={[styles.pill, className].filter(Boolean).join(" ")} data-active={active ? "" : undefined}>
       <span className={styles.label}>{label}</span>
       <span className={styles.value}>{current}</span>
-      <svg className={styles.chevron} width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <ChevronDownIcon className={styles.chevron} width={16} height={16} />
       <select
         className={styles.select}
         value={value}

@@ -11,64 +11,62 @@ export function BudgetOverview({ summary }: { summary: Summary }) {
   const known = summary.paid.total + summary.barter.total;
   return (
     <section className={styles.section} aria-labelledby="budget-title">
-      <div className={styles.money}>
-        <h2 id="budget-title" className={styles.label}>
-          Затраты по таблице
+      <div className={styles.head}>
+        <h2 id="budget-title" className={styles.title}>
+          Затраты
         </h2>
         <p className={styles.total}>{formatRub(summary.total)}</p>
         <p className={styles.parts}>
-          размещения {formatCompactRub(summary.cost)} + себестоимость товара {formatCompactRub(summary.productCost)}
+          размещения {formatCompactRub(summary.cost)} + товар {formatCompactRub(summary.productCost)}
         </p>
+      </div>
+      {known > 0 ? (
         <div
           className={styles.split}
           role="img"
           aria-label={`Платно ${formatRub(summary.paid.total)}, бартер ${formatRub(summary.barter.total)}`}
         >
-          <span className={styles.splitPaid} style={{ flexBasis: `${share(summary.paid.total, known)}%` }} />
-          <span className={styles.splitBarter} style={{ flexBasis: `${share(summary.barter.total, known)}%` }} />
-        </div>
-        <ul className={styles.legend}>
-          <li>
-            <span className={styles.swatch} data-kind="paid" aria-hidden="true" />
-            Платно · {summary.paid.count} {pluralRu(summary.paid.count, "размещение", "размещения", "размещений")}
-            <strong>{formatCompactRub(summary.paid.total)}</strong>
-          </li>
-          <li>
-            <span className={styles.swatch} data-kind="barter" aria-hidden="true" />
-            Бартер · {summary.barter.count} {pluralRu(summary.barter.count, "размещение", "размещения", "размещений")}
-            <strong>{formatCompactRub(summary.barter.total)}</strong>
-          </li>
-          {summary.unknownBudget ? (
-            <li className={styles.muted}>Без категории бюджета · {summary.unknownBudget}</li>
+          {summary.paid.total > 0 ? (
+            <span className={styles.splitPaid} style={{ flexBasis: `${share(summary.paid.total, known)}%` }} />
           ) : null}
-        </ul>
-      </div>
+          {summary.barter.total > 0 ? (
+            <span className={styles.splitBarter} style={{ flexBasis: `${share(summary.barter.total, known)}%` }} />
+          ) : null}
+        </div>
+      ) : null}
+      <ul className={styles.legend}>
+        <li>
+          <span className={styles.swatch} data-kind="paid" aria-hidden="true" />
+          Платно · {summary.paid.count} {pluralRu(summary.paid.count, "размещение", "размещения", "размещений")}
+          <strong>{formatCompactRub(summary.paid.total)}</strong>
+        </li>
+        <li>
+          <span className={styles.swatch} data-kind="barter" aria-hidden="true" />
+          Бартер · {summary.barter.count} {pluralRu(summary.barter.count, "размещение", "размещения", "размещений")}
+          <strong>{formatCompactRub(summary.barter.total)}</strong>
+        </li>
+        {summary.unknownBudget ? <li className={styles.muted}>Без категории бюджета · {summary.unknownBudget}</li> : null}
+      </ul>
       <dl className={styles.stats}>
-        <div>
+        <div className={styles.stat}>
           <dt>Охват сторис</dt>
-          <dd className={styles.value}>{formatCompact(summary.reach)}</dd>
-          <dd className={styles.note}>сумма по блогерам</dd>
+          <dd>{formatCompact(summary.reach)}</dd>
         </div>
-        <div>
+        <div className={styles.stat}>
           <dt>Просмотры рилс</dt>
-          <dd className={styles.value}>{formatCompact(summary.reels)}</dd>
-          <dd className={styles.note}>сумма по блогерам</dd>
+          <dd>{formatCompact(summary.reels)}</dd>
         </div>
-        <div>
+        <div className={styles.stat}>
           <dt>Средний CPM</dt>
-          <dd className={styles.value} data-partial={partial ? "" : undefined}>
-            {summary.cpm === null ? "Нет данных" : formatRub(summary.cpm)}
-          </dd>
-          <dd className={styles.note}>
-            {partial
-              ? `предварительно: по ${formatInt(summary.cpmCoverage)} из ${formatInt(summary.count)}`
-              : `по всем ${formatInt(summary.count)} размещениям`}
-          </dd>
+          <dd>{summary.cpm === null ? "нет данных" : formatRub(summary.cpm)}</dd>
         </div>
       </dl>
       <p className={styles.footnote}>
-        CPM — как в таблице: стоимость размещения ÷ охват сторис × 1000, без себестоимости товара. Средний CPM —
-        суммарная стоимость ÷ суммарный охват.
+        {partial
+          ? `CPM предварительный: посчитан по ${formatInt(summary.cpmCoverage)} из ${formatInt(summary.count)} размещений. `
+          : `CPM по всем ${formatInt(summary.count)} размещениям. `}
+        Как в таблице: стоимость размещения ÷ охват сторис × 1000, без товара; средний — суммарная стоимость ÷
+        суммарный охват. Охват и просмотры — сумма по блогерам.
       </p>
     </section>
   );
