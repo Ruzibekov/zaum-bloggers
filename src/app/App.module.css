@@ -30,13 +30,6 @@
   gap: var(--space-4);
 }
 
-.center {
-  display: grid;
-  place-items: center;
-  min-height: 100dvh;
-  padding: var(--gutter);
-}
-
 @media (max-width: 960px) {
   .loadingSplit {
     grid-template-columns: 1fr;

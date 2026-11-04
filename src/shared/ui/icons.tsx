@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Search,
   Sheet,
+  TriangleAlert,
   X,
   type LucideProps,
 } from "lucide-react";
@@ -49,3 +50,4 @@ export const ArrowDownIcon = lucide(ArrowDown, "arrow-down");
 export const CalendarIcon = lucide(Calendar, "calendar");
 export const ListIcon = lucide(List, "list");
 export const SheetIcon = lucide(Sheet, "sheet");
+export const AlertIcon = lucide(TriangleAlert, "triangle-alert");

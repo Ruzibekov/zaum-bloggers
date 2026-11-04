@@ -23,7 +23,8 @@ import { useFirstVisit } from "@/shared/lib/useFirstVisit";
 import { useHashRoute } from "@/shared/lib/useHashRoute";
 import { useToday } from "@/shared/lib/useToday";
 import { formatDate, formatLongDay, pluralRu } from "@/shared/lib/format";
-import { Button, RefreshIcon, SearchIcon, SheetIcon, Toast, type ToastMessage } from "@/shared/ui";
+import { Button, Toast, type ToastMessage } from "@/shared/ui";
+import { AppBar } from "./AppBar";
 import styles from "./DashboardPage.module.css";
 
 type ReadyState = Extract<DatasetState, { kind: "ready" }>;
@@ -134,42 +135,16 @@ export function DashboardPage({ state, source, onSourceChange, onRefresh }: Dash
 
   return (
     <>
-      <header className={styles.appbar}>
-        <div className={styles.appbarInner}>
-          <a className={styles.brand} href={buildHash({ blogger: null, view: route.view })}>
-            <span className={styles.logo}>ZAUM</span>
-            <span className={styles.brandText}>Блогеры</span>
-          </a>
-          <span className={styles.demo} title="Данные в таблице вымышлены">
-            Демо-данные
-          </span>
-          <span className={styles.spacer} />
-          <Button variant="icon" aria-label="Найти блогера" onClick={findBlogger}>
-            <SearchIcon />
-          </Button>
-          <button
-            type="button"
-            className={styles.source}
-            aria-label={`Источник: ${live ? `Google Таблица, загружено в ${sourceWhen}` : `снимок data.json от ${formatDate(data.generatedAt)}`} — настроить`}
-            onClick={() => setSourceOpen(true)}
-          >
-            <SheetIcon className={styles.sourceIcon} />
-            <span className={styles.sourceName}>{sourceName}</span>
-            <span className={styles.sourceTime}>{sourceWhen}</span>
-          </button>
-          <Button
-            variant="icon"
-            className={styles.refresh}
-            data-busy={refreshing ? "" : undefined}
-            aria-label={refreshing ? "Обновляем данные" : "Обновить данные"}
-            aria-busy={refreshing}
-            disabled={refreshing}
-            onClick={onRefresh}
-          >
-            <RefreshIcon />
-          </Button>
-        </div>
-      </header>
+      <AppBar
+        homeHref={buildHash({ blogger: null, view: route.view })}
+        sourceName={sourceName}
+        sourceWhen={sourceWhen}
+        sourceHint={`источник: ${live ? `Google Таблица, загружено в ${sourceWhen}` : `снимок data.json от ${formatDate(data.generatedAt)}`}, настроить`}
+        refreshing={refreshing}
+        onSource={() => setSourceOpen(true)}
+        onRefresh={onRefresh}
+        onSearch={findBlogger}
+      />
       <main className={styles.main}>
         {fallback ? (
           <div className={styles.banner} role="status">
@@ -215,16 +190,18 @@ export function DashboardPage({ state, source, onSourceChange, onRefresh }: Dash
         </section>
         <div className={styles.split}>
           <WeekAgenda placements={placements} today={today} hrefFor={hrefFor} onOpenCalendar={openCalendar} />
-          <TaskBoard
-            groups={groups}
-            workload={workload}
-            hrefFor={hrefFor}
-            onShowAll={showTask}
-            onShowMismatches={showMismatches}
-            today={today}
-          />
+          <div className={styles.aside}>
+            <TaskBoard
+              groups={groups}
+              workload={workload}
+              hrefFor={hrefFor}
+              onShowAll={showTask}
+              onShowMismatches={showMismatches}
+              today={today}
+            />
+            <BudgetOverview summary={summary} />
+          </div>
         </div>
-        <BudgetOverview summary={summary} />
         <PlacementsBoard
           ref={boardRef}
           searchRef={searchRef}

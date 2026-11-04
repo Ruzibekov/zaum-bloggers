@@ -226,6 +226,12 @@
   align-items: start;
 }
 
+.aside {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
 .footer {
   padding-top: var(--space-4);
   border-top: 1px solid var(--line);
@@ -300,4 +306,11 @@
   .refresh[data-busy] {
     opacity: 0.5;
   }
+}
+
+.errorMain {
+  display: grid;
+  place-items: center;
+  min-height: calc(100dvh - var(--appbar-height));
+  padding: var(--gutter);
 }

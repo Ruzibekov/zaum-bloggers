@@ -352,7 +352,21 @@
 
   .stepper {
     display: flex;
+    align-items: center;
     gap: var(--space-3);
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+  }
+
+  .step[data-state="current"] .stepLabel {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
   }
 }
 

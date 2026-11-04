@@ -169,13 +169,13 @@
 }
 
 .toggle[aria-pressed="true"] {
-  background: var(--interactive);
-  color: var(--on-interactive);
-  box-shadow: none;
+  background: var(--field);
+  box-shadow: inset 0 0 0 1px var(--ink-3);
+  font-weight: 600;
 }
 
 .toggle[aria-pressed="true"] .toggleCount {
-  color: color-mix(in srgb, var(--on-interactive) 78%, var(--interactive));
+  color: var(--ink-2);
 }
 
 @media (hover: hover) {

@@ -1,7 +1,7 @@
 import { useDataset } from "@/entities/placement";
 import { useSourcePreference } from "@/features/data-source";
-import { DashboardPage } from "@/pages/dashboard";
-import { Button, Skeleton, StateBlock } from "@/shared/ui";
+import { DashboardError, DashboardPage } from "@/pages/dashboard";
+import { Skeleton } from "@/shared/ui";
 import styles from "./App.module.css";
 
 const SKELETON_BEADS = Array.from({ length: 24 }, (_, index) => `skeleton-bead-${index}`);
@@ -33,13 +33,7 @@ export function App() {
   const { state, refresh } = useDataset(source);
   if (state.kind === "loading") return <LoadingView />;
   if (state.kind === "error") {
-    return (
-      <div className={styles.center}>
-        <StateBlock title="Не получилось загрузить данные" action={<Button onClick={refresh}>Повторить</Button>}>
-          {state.message}. Проверьте соединение и попробуйте ещё раз.
-        </StateBlock>
-      </div>
-    );
+    return <DashboardError message={state.message} source={source} onSourceChange={setSource} onRefresh={refresh} />;
   }
   return <DashboardPage state={state} source={source} onSourceChange={setSource} onRefresh={refresh} />;
 }

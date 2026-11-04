@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Dataset } from "../model/types";
+import { errorMessageOf } from "./error-message";
 import { loadFileDataset } from "./file";
 import { loadSheetDataset } from "./sheet";
 
@@ -25,10 +26,6 @@ export type DatasetState =
 const MIN_REFRESH_MS = 600;
 const STALE_MS = 5 * 60_000;
 
-function messageOf(error: unknown): string {
-  return error instanceof Error ? error.message : "Неизвестная ошибка";
-}
-
 async function loadWithFallback(
   source: SourcePreference,
   signal: AbortSignal,
@@ -39,7 +36,7 @@ async function loadWithFallback(
   } catch (error) {
     if (signal.aborted) throw error;
     console.warn("Google Sheet load failed, using data.json", error);
-    return { data: await loadFileDataset(signal), fallback: { url: source.url, reason: messageOf(error) } };
+    return { data: await loadFileDataset(signal), fallback: { url: source.url, reason: errorMessageOf(error) } };
   }
 }
 
@@ -55,7 +52,7 @@ export function useDataset(source: SourcePreference): { state: DatasetState; ref
   const [requestedKey, setRequestedKey] = useState(sourceKey);
   if (requestedKey !== sourceKey) {
     setRequestedKey(sourceKey);
-    setState((current) => (current.kind === "ready" ? { ...current, refreshing: true, refreshError: null } : current));
+    setState((current) => (current.kind === "ready" ? { ...current, refreshing: true, refreshError: null } : { kind: "loading" }));
   }
 
   useEffect(() => {
@@ -91,8 +88,8 @@ export function useDataset(source: SourcePreference): { state: DatasetState; ref
         console.error("Dataset load failed", error);
         setState((current) =>
           current.kind === "ready"
-            ? { ...current, refreshing: false, refreshError: messageOf(error) }
-            : { kind: "error", message: messageOf(error) },
+            ? { ...current, refreshing: false, refreshError: errorMessageOf(error) }
+            : { kind: "error", message: errorMessageOf(error) },
         );
       },
     );

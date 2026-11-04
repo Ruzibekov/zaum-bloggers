@@ -14,7 +14,7 @@ import {
 import { SORT_LABEL, type PlacementFilters, type SortKey } from "@/features/placement-filters";
 import { daysBetween } from "@/shared/lib/dates";
 import { DASH, formatCompact, formatInt, formatRub, formatShortDate, formatWeekdayShort, pluralRu } from "@/shared/lib/format";
-import { ArrowDownIcon, ArrowUpIcon, SortIcon } from "@/shared/ui";
+import { AlertIcon, ArrowDownIcon, ArrowUpIcon, SortIcon } from "@/shared/ui";
 import styles from "./PlacementsTable.module.css";
 
 interface PlacementsTableProps {
@@ -112,14 +112,14 @@ export function PlacementsTable({ rows, sort, onSort, hrefFor, scale, today }: P
                 <td className={styles.num} data-label="Подписчики">
                   <span className={styles.primary}>{p.followers === null ? <span className={styles.empty}>нет данных</span> : formatCompact(p.followers)}</span>
                   {p.audienceAge || p.audienceGeo ? (
-                    <span className={styles.secondary}>{[p.audienceAge, p.audienceGeo].filter(Boolean).join(" · ")}</span>
+                    <span className={styles.secondary} title={[p.audienceAge, p.audienceGeo].filter(Boolean).join(" · ")}>{[p.audienceAge, p.audienceGeo].filter(Boolean).join(" · ")}</span>
                   ) : null}
                 </td>
                 <td className={styles.num} data-label="Охват сторис">
                   <span className={styles.primary}>{p.storiesReach === null ? <span className={styles.empty}>нет данных</span> : formatCompact(p.storiesReach)}</span>
                   {p.reelsViews !== null ? <span className={styles.secondary}>рилс {formatCompact(p.reelsViews)}</span> : null}
                 </td>
-                <td className={styles.num} data-label="Затраты">
+                <td className={`${styles.num} ${styles.cost}`} data-label="Затраты">
                   <span className={styles.primary}>{totalCostOf(p) === null ? <span className={styles.empty}>не указаны</span> : formatRub(totalCostOf(p))}</span>
                   {p.productCost ? (
                     <span className={styles.secondary}>
@@ -140,11 +140,15 @@ export function PlacementsTable({ rows, sort, onSort, hrefFor, scale, today }: P
                 </td>
                 <td className={styles.next} data-label="Следующий шаг">
                   {next ? <span className={styles.flag}>{next}</span> : null}
-                  {mismatches.map((text) => (
-                    <span key={text} className={styles.comment}>
-                      Расхождение: {text}
+                  {mismatches.length ? (
+                    <span className={styles.mismatch} title={mismatches.join("\n")}>
+                      <AlertIcon width={14} height={14} />
+                      {mismatches.length > 1
+                        ? `${mismatches.length} ${pluralRu(mismatches.length, "расхождение", "расхождения", "расхождений")}`
+                        : "расхождение"}
+                      <span className="visually-hidden">: {mismatches.join("; ")}</span>
                     </span>
-                  ))}
+                  ) : null}
                   {!next && !mismatches.length ? <span className={styles.empty}>не указан</span> : null}
                 </td>
               </tr>

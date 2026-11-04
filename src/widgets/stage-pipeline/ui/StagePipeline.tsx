@@ -131,25 +131,18 @@ function StageGroup({
   const count = useRolledNumber(bucket.count);
   const money = bucket.count ? formatCompactRub(bucket.total) : "пусто";
   const waitingText = waiting ? `${waiting} ${pluralRu(waiting, "ждёт", "ждут", "ждут")} действия` : null;
-  const label = [
-    `${STAGE_LABEL[bucket.stage]}: ${bucket.count} ${pluralRu(bucket.count, "размещение", "размещения", "размещений")}`,
-    money,
-    waitingText ?? (bucket.count ? STAGE_HINT[bucket.stage] : null),
-  ]
-    .filter(Boolean)
-    .join(", ");
   return (
     <button
       type="button"
       className={styles.group}
       data-stage={bucket.stage}
       aria-pressed={pressed}
-      aria-label={`${label}. ${pressed ? "Снять фильтр" : "Показать в списке"}`}
       onClick={() => onSelect(bucket.stage)}
     >
       <span className={styles.shape} aria-hidden="true" />
       <span className={styles.name}>{STAGE_LABEL[bucket.stage]}</span>
       <span className={styles.count}>{count}</span>
+      <span className="visually-hidden">{` ${pluralRu(bucket.count, "размещение", "размещения", "размещений")}, `}</span>
       <span className={styles.meta}>
         {money}
         {waitingText ? (
@@ -158,6 +151,7 @@ function StageGroup({
           <span> · {STAGE_HINT[bucket.stage]}</span>
         ) : null}
       </span>
+      <span className="visually-hidden">{pressed ? ". Снять фильтр" : ". Показать в списке"}</span>
     </button>
   );
 }

@@ -4,6 +4,7 @@ import {
   formatCompact,
   formatCompactRub,
   formatDate,
+  formatDayHeading,
   formatInt,
   formatLongDay,
   formatMonthLong,
@@ -72,6 +73,12 @@ describe("dates and months", () => {
     expect(nb(formatRelativeDay("2026-11-07", "2026-11-04"))).toBe("Сб, 7 ноября");
     expect(formatRelativeDay(null, "2026-11-04")).toBe("Дата не назначена");
     expect(nb(formatLongDay("2026-11-04"))).toBe("Среда, 4 ноября");
+  });
+
+  it("keeps one heading format for every agenda day", () => {
+    expect(nb(formatDayHeading("2026-11-05", "2026-11-04"))).toBe("Чт, 5 ноября · завтра");
+    expect(nb(formatDayHeading("2026-11-04", "2026-11-04"))).toBe("Ср, 4 ноября · сегодня");
+    expect(nb(formatDayHeading("2026-11-06", "2026-11-04"))).toBe("Пт, 6 ноября");
   });
 
   it("formats signed percentages with a real minus sign", () => {

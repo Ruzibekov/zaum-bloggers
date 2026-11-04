@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { PIPELINE, STAGE_LABEL, StageDot, type Placement } from "@/entities/placement";
 import { monthGrid, monthOf, shiftMonth } from "@/shared/lib/dates";
-import { formatMonthLong, formatRelativeDay, pluralRu } from "@/shared/lib/format";
+import { formatDayHeading, formatMonthLong, formatRelativeDay, pluralRu } from "@/shared/lib/format";
 import { Button, ChevronIcon } from "@/shared/ui";
 import styles from "./PlacementsCalendar.module.css";
 
@@ -110,7 +110,7 @@ export function PlacementsCalendar({ rows, initialMonth, today, hrefFor }: Place
       <ol className={styles.agenda} aria-label={`Публикации, ${formatMonthLong(month)}`}>
         {daysWithItems.map((date) => (
           <li key={date} className={styles.agendaDay} data-today={date === today ? "" : undefined}>
-            <span className={styles.agendaDate}>{formatRelativeDay(date, today)}</span>
+            <span className={styles.agendaDate}>{formatDayHeading(date, today)}</span>
             <ul className={styles.agendaItems}>
               {(byDate.get(date) ?? []).map((p) => (
                 <li key={p.id}>

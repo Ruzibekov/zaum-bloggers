@@ -113,6 +113,12 @@ export function formatRelativeDay(date: string | null, today: string): string {
   return `${formatWeekdayShort(date).replace(/^./, (c) => c.toUpperCase())}, ${formatDate(date)}`;
 }
 
+export function formatDayHeading(date: string, today: string): string {
+  const full = `${formatWeekdayShort(date).replace(/^./, (c) => c.toUpperCase())}, ${formatDate(date)}`;
+  const relative = formatRelativeDay(date, today);
+  return relative === full || relative === DASH ? full : `${full} · ${relative.toLowerCase()}`;
+}
+
 export function formatSignedPercent(value: number | null | undefined): string {
   if (!finite(value)) return DASH;
   const rounded = Math.round(value * 100);

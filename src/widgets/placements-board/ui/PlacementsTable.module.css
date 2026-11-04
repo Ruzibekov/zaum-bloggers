@@ -209,10 +209,10 @@
   display: block;
   margin-top: 2px;
   font-size: var(--text-meta);
+  line-height: var(--lh-meta);
   color: var(--ink-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
 .empty {
@@ -241,8 +241,7 @@
 }
 
 
-.flag,
-.comment {
+.flag {
   display: block;
   font-size: var(--text-meta);
   line-height: var(--lh-meta);
@@ -265,13 +264,21 @@
   vertical-align: 1px;
 }
 
-.comment {
+.mismatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: var(--space-1);
+  font-size: var(--text-meta);
+  line-height: var(--lh-meta);
+  font-weight: 550;
   color: var(--ink-2);
+  white-space: nowrap;
 }
 
-.flag + .comment,
-.comment + .comment {
-  margin-top: var(--space-1);
+.mismatch svg {
+  flex: none;
+  color: var(--signal);
 }
 
 @media (max-width: 960px) {
@@ -315,6 +322,10 @@
   .stage {
     grid-column: 1 / -1;
     justify-self: start;
+  }
+
+  .cost {
+    grid-column: span 2;
   }
 
   .next {

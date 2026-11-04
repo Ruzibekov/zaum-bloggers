@@ -6,6 +6,7 @@ export { Skeleton } from "./Skeleton";
 export { StateBlock } from "./StateBlock";
 export { Toast, type ToastMessage } from "./Toast";
 export {
+  AlertIcon,
   ArrowDownIcon,
   ArrowIcon,
   ArrowUpIcon,
